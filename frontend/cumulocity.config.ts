@@ -1,5 +1,5 @@
 import { EnvironmentOptions } from '@c8y/devkit/dist/options';
-import { author, description, version } from './package.json';
+import { author, description, version, license } from './package.json';
 
 export default {
   runTime: {
@@ -26,6 +26,7 @@ export default {
         description: 'Allows to interact with webinterface of devices.',
       },
     ],
+    license,
   },
   buildTime: {
     federation: [
