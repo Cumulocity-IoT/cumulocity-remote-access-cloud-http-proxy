@@ -82,6 +82,9 @@ export class ConnectionHandler {
         this.answerHealthRequest();
         return;
       } else {
+        this.logger.error(
+          "error 418, user did not provide configId or deviceId"
+        );
         this.socket.write(
           Buffer.from("HTTP/1.1 418\r\nContent-Length: 0\r\n\r\n")
         );
@@ -329,10 +332,10 @@ export class ConnectionHandler {
   }
 
   private static getHeaderSection(partial: string): string | false {
-    const [headerSection] = partial.split(this.headerSeparator, 1);
-    if (headerSection === undefined) {
+    if (!this.headerSeparator.test(partial)) {
       return false;
     }
+    const [headerSection] = partial.split(this.headerSeparator, 1);
     return headerSection;
   }
 
