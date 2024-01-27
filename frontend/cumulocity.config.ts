@@ -51,7 +51,7 @@ export default {
         to: 'README.md',
       },
       { from: '../LICENSE', to: 'LICENSE.txt' },
-      // { from: '../images', to: 'images' },
+      { from: '../images', to: 'images' },
     ],
   },
 } as const satisfies EnvironmentOptions;
