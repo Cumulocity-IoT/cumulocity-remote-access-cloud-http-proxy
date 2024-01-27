@@ -1,0 +1,29 @@
+{
+  "apiVersion": "2",
+  "name": "cloud-http-proxy",
+  "version": "1.0.1-SNAPSHOT",
+  "provider": {
+    "name": "Tristan Bastian",
+    "domain": "https://github.com/SoftwareAG/cumulocity-node-red",
+    "support": "https://github.com/SoftwareAG/cumulocity-node-red/issues"
+  },
+  "isolation": "MULTI_TENANT",
+  "roles": [],
+  "requiredRoles": [],
+  "livenessProbe": {
+    "httpGet": {
+      "path": "/health",
+      "port": 80
+    },
+    "initialDelaySeconds": 10,
+    "periodSeconds": 10
+  },
+  "readinessProbe": {
+    "httpGet": {
+      "path": "/health",
+      "port": 80
+    },
+    "initialDelaySeconds": 10,
+    "periodSeconds": 10
+  }
+}

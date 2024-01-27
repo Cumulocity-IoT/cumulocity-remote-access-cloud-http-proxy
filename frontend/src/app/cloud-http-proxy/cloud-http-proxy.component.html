@@ -1,0 +1,17 @@
+<c8y-action-bar-item placement="right"
+  ><button class="btn btn-link" (click)="openInNewWindow()">
+    <i [c8yIcon]="'external-link'"></i>&nbsp;
+    <span translate>Open in new window</span>
+  </button></c8y-action-bar-item
+>
+
+<iframe
+  [ngClass]="{ hidden: showLoader }"
+  [src]="pathToProxyMS$ | async"
+  (load)="iframeLoaded($event)"
+  class="split-scroll"
+  #iframe
+>
+</iframe>
+
+<c8y-loading *ngIf="showLoader"></c8y-loading>
