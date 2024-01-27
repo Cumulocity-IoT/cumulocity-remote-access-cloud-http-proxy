@@ -1,11 +1,11 @@
 {
   "apiVersion": "2",
   "name": "cloud-http-proxy",
-  "version": "1.0.1-SNAPSHOT",
+  "version": "1.0.0",
   "provider": {
     "name": "Tristan Bastian",
-    "domain": "https://github.com/SoftwareAG/cumulocity-node-red",
-    "support": "https://github.com/SoftwareAG/cumulocity-node-red/issues"
+    "domain": "https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy",
+    "support": "https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/issues"
   },
   "isolation": "MULTI_TENANT",
   "roles": [],

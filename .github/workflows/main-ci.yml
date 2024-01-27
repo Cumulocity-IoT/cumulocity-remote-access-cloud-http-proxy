@@ -62,7 +62,7 @@ jobs:
       - name: 🚧  Build Frontend
         run: |
           cd frontend
-          npm run build:ci
+          npm run build
 
       - name: Upload Frontend Artifact
         uses: actions/upload-artifact@v3
