@@ -10,6 +10,8 @@ A sample usecase might be to access a configuration UI on your device or to e.g.
 
 This functionality is heavily relying on the [Cloud Remote Access feature of Cumulocity](https://cumulocity.com/guides/cloud-remote-access/cra-general-aspects/).
 
+- The shell application that you are installing the UI plugin to should use at least version 1017+ of the Web SDK.
+
 - **PASSTHROUGH endpoint:** To use the proxy you need a remote access `PASSTHROUGH` endpoint configured on each of your devices you want to connect to. See [this guide](https://tech.forums.softwareag.com/t/how-to-get-started-with-cloud-remote-access-for-cumulocity-iot/258446#step-by-step-guide-to-setup-a-passthrough-connection-16) for further details.
 
 - **Tenant Authentication Method:** The desired tenant must be configured to use the [`OAI Secure` Authentication](https://cumulocity.com/guides/users-guide/administration/#authentication)

@@ -74,6 +74,11 @@ export class CloudHttpProxyAvailabilityService {
   }
 
   ensureMicroserviceIsPresent(): Observable<boolean> {
+    // added for Web SDK version 1017 compatibility
+    if (!this.appState.currentAppsOfUser) {
+      return of(true);
+    }
+
     return this.appState.currentAppsOfUser.pipe(
       first(),
       map(

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlertService, CoreModule } from '@c8y/ngx-components';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CookieModule, CookieService, CookieOptions } from 'ngx-cookie';
 import { NEVER, Observable, combineLatest } from 'rxjs';
 import { filter, map, shareReplay, tap } from 'rxjs/operators';
@@ -32,7 +31,6 @@ export class CloudHttpProxyComponent {
       this.activatedRoute.params,
       this.activatedRoute.parent?.params || NEVER,
     ]).pipe(
-      takeUntilDestroyed(),
       map(([paramsFromCurrentRoute, paramsFromParentRoute]) => {
         const { cloudProxyConfigId } = paramsFromCurrentRoute;
         const { id: cloudProxyDeviceId } = paramsFromParentRoute;
