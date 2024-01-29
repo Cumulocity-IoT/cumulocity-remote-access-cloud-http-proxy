@@ -18,6 +18,14 @@ This functionality is heavily relying on the [Cloud Remote Access feature of Cum
 
 - **Disable XSRF-Token validation**: The XSRF-Token validation of Cumulocity needs to be disabled for the tenant. Please check on your own if this might be a security concern for you: [Cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery). To do this, the corresponding tenant option (category: `jwt`, key: `xsrf-validation.enabled`) must be set to `false`.
 
+    **Note**
+    
+    If you're using [go-c8y-cli](https://goc8ycli.netlify.app/), then you can set the tenant option using the following command:
+
+    ```
+    c8y tenantoptions update --category jwt --key xsrf-validation.enabled --value false
+    ```
+
 - You can only communicate with a single web server per browser. You might be able to workaround this by using multiple browsers or incognito windows.
 
 - This functionality is currently limited to just communicate via HTTP. HTTPS would be in general also doable, but there is not really a benefit in encrypting the connection to the device another time (as the websocket connection is already encrypted) and it would still not be end-to-end encrypted.
