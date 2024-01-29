@@ -1,6 +1,6 @@
 # Remote access cloud HTTP proxy
 
-A Cumulocity IoT microservice that allows to proxy HTTP requests through the cloud to an HTTP server running on a Cumulocity IoT connected device.
+A Cumulocity IoT microservice that allows to proxy HTTP requests through the cloud to a (local) HTTP server running on a Cumulocity IoT connected device or in the accessible network of the device.
 This project contains a backend microservice and a UI plugin. Both must be installed your tenant in order to use this functionality.
 
 A sample usecase might be to access a configuration UI on your device or to e.g. access an instance of [Node-RED](https://nodered.org/) running on your device:
