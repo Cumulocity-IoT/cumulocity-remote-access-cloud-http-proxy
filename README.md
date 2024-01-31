@@ -18,19 +18,17 @@ This functionality is heavily relying on the [Cloud Remote Access feature of Cum
 
 - **Disable XSRF-Token validation**: The XSRF-Token validation of Cumulocity needs to be disabled for the tenant. Please check on your own if this might be a security concern for you: [Cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery). To do this, the corresponding tenant option (category: `jwt`, key: `xsrf-validation.enabled`) must be set to `false`.
 
-    **Note**
-    
-    If you're using [go-c8y-cli](https://goc8ycli.netlify.app/), then you can set the tenant option using the following command:
+  **Note**
 
-    ```
-    c8y tenantoptions update --category jwt --key xsrf-validation.enabled --value false
-    ```
+  If you're using [go-c8y-cli](https://goc8ycli.netlify.app/), then you can set the tenant option using the following command:
 
-- You can only communicate with a single web server per browser. You might be able to workaround this by using multiple browsers or incognito windows.
+  ```
+  c8y tenantoptions update --category jwt --key xsrf-validation.enabled --value false
+  ```
 
 - This functionality is currently limited to just communicate via HTTP. HTTPS would be in general also doable, but there is not really a benefit in encrypting the connection to the device another time (as the websocket connection is already encrypted) and it would still not be end-to-end encrypted.
 
-- The web server you are trying to access must be compatible with being served behind a reverse proxy with another path (which is in this case: `/service/cloud-http-proxy/`). This might be something you can configure as part of your application, but not all applications support this.
+- The web server you are trying to access must be compatible with being served behind a reverse proxy with another path (which is in this case: `/service/cloud-http-proxy/<deviceId>/<remoteAccessConnectConfigId>/`). This might be something you can configure as part of your application, but not all applications support this.
 
 In case you are reaching the limits of this tool, you can also give [remote-access-local-proxy](https://github.com/SoftwareAG/cumulocity-remote-access-local-proxy) a try. This requires an application be to executed locally, but is not limited to just the HTTP protocol.
 
@@ -40,11 +38,10 @@ The microservice is written in nodeJS.
 
 It's functionality can be described in the following steps:
 
-1. Accept incoming connections
-2. Read all incoming TCP packets until we have the complete HTTP header.
-3. The Cookie header is parsed to make use of the authentication and the custom `cloudProxyConfigId` & `cloudProxyDeviceId` cookies in the next steps
-4. The authentication information is used to create a new remote access connect session. The device ID and remote access connect configuration Id is taken from the previously parsed cookie.
-5. After the remote access connect Websocket connection was established successfully, it will send the already read HTTP header and all susequent TCP packets through the Websocket connection to the web server running on the device. Packets received through the websocket connection are also forwarded in the other direction.
+1. Accept incoming requests on path: `/service/cloud-http-proxy/<deviceId>/<remoteAccessConnectConfigId>/**/*`
+2. The authentication details and the connection details included in the path are taken from the incoming request.
+3. The authentication information is used to create a new remote access connect session. The device ID and remote access connect configuration Id is also required to establish this connection.
+4. After the remote access connect Websocket connection was established successfully, it will send the HTTP request through the Websocket connection to the web server running on the device. The corresponding response is also forwarded.
 
 ## UI Plugin
 

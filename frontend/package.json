@@ -41,7 +41,6 @@
     "@c8y/websdk": "1019.2.9",
     "angular": "1.6.9",
     "ngx-bootstrap": "11.0.2",
-    "ngx-cookie": "^6.0.1",
     "rxjs": "^7.4.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

@@ -3,3 +3,4 @@ node_modules
 *.zip
 *.tar
 dist
+cumulocity.json
