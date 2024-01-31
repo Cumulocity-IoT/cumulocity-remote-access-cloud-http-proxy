@@ -74,3 +74,9 @@ In case the tab does not show up, check the browsers console logs. In case you'v
 2. Install e.g. Node-RED via [their install script](https://github.com/node-red/linux-installers/#debian-ubuntu-raspberry-pi-os)
 3. Create an remote access endpoint like described above.
 4. Reload the page once and you should see a new tab on device level with the name that you have used for the connection.
+
+## Ideas for future improvements:
+
+- **Connection Pools:** As of now a remote access connect session is used per request. This does mean that per HTTP request sent, an operation for the device is created to establish the remote access connect session. This adds a certain delay to every request and creates a bunch of operations in Cumulocity. This could be improved by having a connection pool per device, to reuse remote access connect sessions.
+
+- **Authorization:** Currently any sort of authorization to the target HTTP server is not supported since the `Authorization` headers would be interpreted by Cumulocity and the access would be probably denied (as the user you are using against the device is probably not existing inside of Cumulocity). In theory an authorization header could be added to the requests as part of the http proxy that is running inside of the microservice.
