@@ -7,6 +7,9 @@ import {
 import * as http from "http";
 import { RCAConfig } from "./model";
 import { Request } from "express";
+import * as cookieLib from "cookie-parse";
+import winston from "winston";
+import { IncomingHttpHeaders } from "http";
 
 export class ConnectionDetails {
   client: Client;
@@ -17,6 +20,8 @@ export class ConnectionDetails {
   currentUser: ICurrentUser;
   isHealtRequest = false;
   isWebsocket = false;
+  queryParamsString = "";
+  originalHeaders: IncomingHttpHeaders = {};
 
   constructor(
     public req: Request<
@@ -25,12 +30,17 @@ export class ConnectionDetails {
       } & {
         cloudProxyConfigId: string;
       }
-    >
+    >,
+    private logger: winston.Logger
   ) {}
 
   async extractDetails() {
     this.getConnectionDetailsFromParams(this.req);
     this.isWebsocket = !!this.req.headers.upgrade;
+    this.queryParamsString = ConnectionDetails.getQueryParamsFromHeaders(
+      this.req.headers
+    );
+    this.originalHeaders = Object.assign({}, this.req.headers);
     await this.getTenantDetailsClient(this.req.headers);
     this.rcaConfig = await this.getRCAConfig();
   }
@@ -50,6 +60,30 @@ export class ConnectionDetails {
     );
     client.core.tenant = currentTenant.name;
     this.client = client;
+  }
+
+  private static getQueryParamsFromHeaders(headers: http.IncomingHttpHeaders) {
+    let { authorization: token, "x-xsrf-token": xsrf, cookie } = headers;
+    const { "XSRF-TOKEN": xsrf2 } = cookieLib.parse(cookie || "");
+
+    const queryParams: { token?: string; "XSRF-TOKEN"?: string } = {};
+    if (token && token !== "Basic ") {
+      token = token.replace(/^Basic\s/, "");
+      Object.assign(queryParams, { token });
+    }
+    if (xsrf || xsrf2) {
+      Object.assign(queryParams, { "XSRF-TOKEN": xsrf || xsrf2 });
+    }
+
+    let queryParamsString = "";
+    if (Object.keys(queryParams).length) {
+      queryParamsString =
+        "?" +
+        Object.keys(queryParams)
+          .map((key) => `${key}=${queryParams[key]}`)
+          .join("&");
+    }
+    return queryParamsString;
   }
 
   private getConnectionDetailsFromParams(

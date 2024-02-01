@@ -6,6 +6,7 @@ import { createProxyServer } from "http-proxy";
 import { ConnectionDetails } from "./connection-details";
 import { RCAConnectionServer } from "./rca-connection-server";
 import express from "express";
+import { HeaderAdjustment } from "./header-adjustment";
 
 dotenv.config();
 
@@ -24,34 +25,46 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
-  if (process.env.FALLBACK_COOKIE && !req.headers.cookie) {
-    req.headers.cookie = process.env.FALLBACK_COOKIE;
-  }
+  // if (process.env.FALLBACK_COOKIE && !req.headers.cookie) {
+  //   req.headers.cookie = process.env.FALLBACK_COOKIE;
+  // }
   let details: ConnectionDetails;
   try {
-    details = new ConnectionDetails(req);
+    details = new ConnectionDetails(req, logger);
     await details.extractDetails();
   } catch (e) {
-    logger.error("Failed to retrieve details", { e });
-    res.json(e).sendStatus(400);
+    logger.error("Failed to retrieve details", {
+      e,
+      headers: req.headers,
+      params: req.params,
+    });
+    res.status(400).json(e);
     return;
   }
 
   statistics.totalNumberOfRequests++;
   // You can define here your custom logic to handle the request
   // and then proxy the request.
-  const newOrExistingServer = await RCAConnectionServer.newConnectionServer(
-    logger,
-    details
-  );
-  newOrExistingServer.details = details;
+  let rcaConnServer: RCAConnectionServer;
+  try {
+    rcaConnServer = await RCAConnectionServer.newConnectionServer(
+      logger,
+      details
+    );
+  } catch (e) {
+    res.status(500).json(e);
+    return;
+  }
+
   const extraHeaders = {};
   if (req.headers.connection) {
     extraHeaders["Connection"] = "keep-alive";
   }
-  delete req.headers.authorization;
+
+  HeaderAdjustment.adjust(req.headers, details);
+
   const proxy = createProxyServer({
-    target: { host: "127.0.0.1", port: newOrExistingServer.port },
+    target: { host: "127.0.0.1", port: rcaConnServer.port },
   });
 
   try {
@@ -76,7 +89,7 @@ app.use("/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
     );
   } catch (e) {
     logger.error(e);
-    res.writeHead(500).end();
+    res.sendStatus(500);
     return;
   }
 });

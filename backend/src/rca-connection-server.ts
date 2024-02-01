@@ -4,7 +4,6 @@ import { createServer, Server, AddressInfo } from "net";
 import { ConnectionHandler } from "./connection-handler";
 import { IncomingHttpHeaders } from "http";
 import { WebSocket } from "ws";
-import * as cookieLib from "cookie-parse";
 import { statistics } from "./statistics";
 
 export class RCAConnectionServer {
@@ -52,9 +51,9 @@ export class RCAConnectionServer {
   }
 
   createNewWebsocket() {
-    const headers = this.details.req.headers;
+    const headers = this.details.originalHeaders;
     const { cookie, authorization } = headers;
-    const queryParams = RCAConnectionServer.getQueryParamsFromHeaders(headers);
+
     const webSocketHeaders: IncomingHttpHeaders = {};
     if (cookie) {
       webSocketHeaders.cookie = cookie;
@@ -65,42 +64,24 @@ export class RCAConnectionServer {
 
     const { currentTenant, cloudProxyDeviceId, cloudProxyConfigId } =
       this.details;
-    const url = `wss://${currentTenant.domainName}/service/remoteaccess/client/${cloudProxyDeviceId}/configurations/${cloudProxyConfigId}${queryParams}`;
+    const url = `wss://${currentTenant.domainName}/service/remoteaccess/client/${cloudProxyDeviceId}/configurations/${cloudProxyConfigId}${this.details.queryParamsString}`;
     const socket = new WebSocket(url, ["binary"], {
       headers: webSocketHeaders,
     });
 
-    socket.on("open", () => {
-      if (socket) {
-        this.logger.debug(
-          `Successfully established websocket connection to ${url}`
-        );
-      }
+    socket.once("open", () => {
+      this.logger.debug(
+        `Successfully established websocket connection to ${url}`
+      );
+    });
+
+    socket.once("unexpected-response", (clientRequest) => {
+      this.logger.warn(`unexpected-response websocket connection to ${url}`, {
+        clientRequest,
+      });
     });
 
     return socket;
-  }
-
-  private static getQueryParamsFromHeaders(headers: IncomingHttpHeaders) {
-    const { Authorization: token, "X-XSRF-TOKEN": xsrf, cookie } = headers;
-    const { "XSRF-TOKEN": xsrf2 } = cookieLib.parse(cookie);
-    const queryParams: { token?: string; "XSRF-TOKEN"?: string } = {};
-    if (token && token !== "Basic ") {
-      Object.assign(queryParams, { token });
-    }
-    if (xsrf || xsrf2) {
-      Object.assign(queryParams, { "XSRF-TOKEN": xsrf || xsrf2 });
-    }
-
-    let queryParamsString = "";
-    if (Object.keys(queryParams).length) {
-      queryParamsString =
-        "?" +
-        Object.keys(queryParams)
-          .map((key) => `${key}=${queryParams[key]}`)
-          .join("&");
-    }
-    return queryParamsString;
   }
 
   static async newConnectionServer(
