@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.0.0...v2.1.0) (2024-02-01)
+
+
+### Features
+
+* allow adding custom authorization headers per config to every request ([d06aba7](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/d06aba7ea6fb643b4eb8f54c7eaa0ec1e8d3e9db))
+
 # [2.0.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v1.0.5...v2.0.0) (2024-01-31)
 
 
