@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.1.0...v2.2.0) (2024-02-04)
+
+
+### Features
+
+* added socket pool which allows to reuse previously established connections. ([b44bc9b](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/b44bc9b2c924a07759783e2dabf6d6f95f45c975))
+
 # [2.1.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.0.0...v2.1.0) (2024-02-01)
 
 
