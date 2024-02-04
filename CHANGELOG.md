@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.2.0...v2.2.1) (2024-02-04)
+
+
+### Bug Fixes
+
+* remove hint that only one session is possible at the same time ([744a0a3](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/744a0a394d55064cf027e513f96e3f809cf8b18d))
+
 # [2.2.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.1.0...v2.2.0) (2024-02-04)
 
 

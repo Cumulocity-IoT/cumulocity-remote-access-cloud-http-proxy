@@ -1,6 +1,6 @@
 {
   "name": "remote-access-cloud-http-proxy-ui",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "author": "Tristan Bastian",
   "description": "Allows to proxy HTTP requests through the cloud to an HTTP server running on a Cumulocity IoT connected device.",
   "scripts": {
