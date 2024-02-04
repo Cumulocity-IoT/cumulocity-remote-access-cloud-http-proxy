@@ -1,9 +1,4 @@
-import {
-  Client,
-  ICurrentTenant,
-  ICurrentUser,
-  MicroserviceClientRequestAuth,
-} from "@c8y/client";
+import { Client, MicroserviceClientRequestAuth } from "@c8y/client";
 import * as http from "http";
 import { RCAConfig } from "./model";
 import { Request } from "express";
@@ -11,14 +6,16 @@ import * as cookieLib from "cookie-parse";
 import winston from "winston";
 import { IncomingHttpHeaders } from "http";
 
+const domainCache = new Map<string, string>();
+
 export class ConnectionDetails {
   client: Client;
-  currentTenant: ICurrentTenant;
+  tenant: string;
+  domain: string;
   cloudProxyConfigId: string;
   cloudProxyDeviceId: string;
-  rcaConfig: RCAConfig;
-  currentUser: ICurrentUser;
-  isHealtRequest = false;
+  rcaConfig: RCAConfig | undefined;
+  user: string;
   isWebsocket = false;
   queryParamsString = "";
   originalHeaders: IncomingHttpHeaders = {};
@@ -41,25 +38,102 @@ export class ConnectionDetails {
       this.req.headers
     );
     this.originalHeaders = Object.assign({}, this.req.headers);
-    await this.getTenantDetailsClient(this.req.headers);
-    this.rcaConfig = await this.getRCAConfig();
+
+    const { userId, tenantId, domain } = this.getUserAndTenantFromRequest(
+      this.req
+    );
+
+    this.user = userId;
+    this.tenant = tenantId;
+    this.domain = domain;
+
+    this.client = await this.getTenantDetailsClient(this.req.headers, domain);
+
+    if (this.logger.isDebugEnabled()) {
+      this.rcaConfig = await this.getRCAConfig();
+    }
   }
 
-  private async getTenantDetailsClient(headers: http.IncomingHttpHeaders) {
-    const initialClient = new Client(
-      new MicroserviceClientRequestAuth(headers),
-      process.env.C8Y_BASEURL
-    );
-    const { data: currentTenant } = await initialClient.tenant.current();
-    this.currentTenant = currentTenant;
-    const { data: user } = await initialClient.user.current();
-    this.currentUser = user;
+  private getUserAndTenantFromRequest(req: Request) {
+    const basicAuthPrefix = /^Basic\s/;
+    const bearerAuthPrefix = /^Bearer\s/;
+    const {
+      authorization,
+      cookie,
+      "x-forwarded-host": forwardedHost,
+    } = req.headers;
+    const host = Array.isArray(forwardedHost)
+      ? forwardedHost[0]
+      : forwardedHost;
+    let domain = host?.replace(/:.*$/, "") || "";
+    if (basicAuthPrefix.test(authorization || "")) {
+      const basicAuthToken = authorization.replace(basicAuthPrefix, "");
+      const decodedToken = Buffer.from(basicAuthToken, "base64").toString();
+      const tenantId = decodedToken.replace(/\/.*$/, "");
+      const userId = decodedToken.replace(/:.*$/, "").replace(/^.*\//, "");
+      const extractDetails = { tenantId, userId, domain };
+      this.logger.debug(`Extracted Details (basic)`, { extractDetails });
+      return extractDetails;
+    }
+    let bearerToken = "";
+    if (bearerAuthPrefix.test(authorization || "")) {
+      bearerToken = authorization.replace(bearerAuthPrefix, "");
+    } else {
+      const { authorization: authCookie } = cookieLib.parse(cookie || "");
+      if (authCookie) {
+        bearerToken = authCookie;
+      }
+    }
+    if (!bearerToken) {
+      return undefined;
+    }
+
+    const {
+      iss,
+      aud,
+      sub,
+      ten: tenantId,
+    } = JSON.parse(Buffer.from(bearerToken.split(".")[1], "base64").toString());
+
+    const extractDetails = {
+      tenantId,
+      userId: sub,
+      domain: iss || aud || domain,
+    };
+
+    this.logger.debug(`Extracted Details (bearer)`, { extractDetails });
+    return extractDetails;
+  }
+
+  private async getTenantDetailsClient(
+    headers: http.IncomingHttpHeaders,
+    domain?: string
+  ) {
+    if (!domain) {
+      const initialClient = new Client(
+        new MicroserviceClientRequestAuth(headers),
+        process.env.C8Y_BASEURL
+      );
+
+      const domainFromCache = domainCache.get(this.tenant);
+      if (domainFromCache) {
+        domain = domainFromCache;
+      } else {
+        const { data: currentTenant } = await initialClient.tenant.current();
+
+        domain = currentTenant.domainName;
+        domainCache.set(this.tenant, domain);
+      }
+    }
+
+    this.domain = domain;
+
     const client = new Client(
       new MicroserviceClientRequestAuth(headers),
-      `https://${currentTenant.domainName}`
+      `https://${domain}`
     );
-    client.core.tenant = currentTenant.name;
-    this.client = client;
+    client.core.tenant = this.tenant;
+    return client;
   }
 
   private static getQueryParamsFromHeaders(headers: http.IncomingHttpHeaders) {

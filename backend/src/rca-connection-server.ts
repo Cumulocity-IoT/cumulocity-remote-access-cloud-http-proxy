@@ -16,28 +16,35 @@ export class RCAConnectionServer {
   constructor(
     logger: winston.Logger,
     public details: ConnectionDetails,
-    readyCallback: () => void
+    readyCallback: () => void,
+    private closedCallback: () => void
   ) {
     this.logger = logger.child({
-      tenantId: this.details.currentTenant.name,
-      userId: this.details.currentUser.id,
+      tenantId: this.details.tenant,
+      userId: this.details.user,
       deviceId: this.details.cloudProxyDeviceId,
       configId: this.details.cloudProxyConfigId,
       ws: this.details.isWebsocket,
-      targetHostname: this.details.rcaConfig.hostname,
-      targetPort: this.details.rcaConfig.port,
-      method: this.details.req.method,
-      url: this.details.req.url,
-      requestId: this.details.req.headers["x-request-id"],
-      connection: this.details.req.headers.connection,
-      payloadLength: this.details.req.headers["content-length"],
+      targetHostname: this.details.rcaConfig?.hostname,
+      targetPort: this.details.rcaConfig?.port,
     });
     statistics.totalNumberOfServers++;
     statistics.currentActiveServers++;
     this.socketServer = createServer((socket) => {
       const websocket = this.createNewWebsocket();
+      statistics.totalNumberOfWebSockets++;
+      socket.once("close", () => {
+        setTimeout(() => {
+          if (!this.socketServer.connections) {
+            this.closedCallback();
+            setTimeout(() => {
+              this.logger.debug("Closing socketServer.");
+              this.socketServer.close();
+            }, 10_000);
+          }
+        }, 10_000);
+      });
       const handler = new ConnectionHandler(socket, websocket, this.logger);
-      this.socketServer.close();
     }).listen(0, () => {
       const address = this.socketServer.address() as AddressInfo;
       this.port = address.port;
@@ -62,9 +69,8 @@ export class RCAConnectionServer {
       webSocketHeaders.authorization = authorization;
     }
 
-    const { currentTenant, cloudProxyDeviceId, cloudProxyConfigId } =
-      this.details;
-    const url = `wss://${currentTenant.domainName}/service/remoteaccess/client/${cloudProxyDeviceId}/configurations/${cloudProxyConfigId}${this.details.queryParamsString}`;
+    const { domain, cloudProxyDeviceId, cloudProxyConfigId } = this.details;
+    const url = `wss://${domain}/service/remoteaccess/client/${cloudProxyDeviceId}/configurations/${cloudProxyConfigId}${this.details.queryParamsString}`;
     const socket = new WebSocket(url, ["binary"], {
       headers: webSocketHeaders,
     });
@@ -82,18 +88,5 @@ export class RCAConnectionServer {
     });
 
     return socket;
-  }
-
-  static async newConnectionServer(
-    logger: winston.Logger,
-    connectionDetails: ConnectionDetails
-  ) {
-    const promise = new Promise<RCAConnectionServer>((resolve) => {
-      const newServer = new RCAConnectionServer(logger, connectionDetails, () =>
-        resolve(newServer)
-      );
-    });
-    const newServer = await promise;
-    return newServer;
   }
 }

@@ -68,6 +68,18 @@ It might be required to reload the page once for the tab to show up.
 
 In case the tab does not show up, check the browsers console logs. In case you've missed to set a tenant option, you should see a warning there.
 
+In case the http server you are trying to access needs some sort auf authorization, you can set an `authorization` header via the UI, which will be attached by the proxy microservice to all request.
+
+In case you want to set some other header as well, you can do so by setting a tenant option per header:
+
+- Category should be `cloud-http-proxy`
+- Key should follow this syntax: `credentials.rca-http-header-<headerKey>-<deviceId>-<connectionId>`
+- Value: the header value to be set
+
+  ```
+  c8y tenantoptions update --category cloud-http-proxy --key credentials.rca-http-header-<headerKey>-<deviceId>-<connectionId> --value <headerValue>
+  ```
+
 ## How to demo this
 
 1. Setup a device with an agent that supports remote access connect, e.g. [thin-edge.io](https://thin-edge.github.io/thin-edge.io/install/)
@@ -77,6 +89,6 @@ In case the tab does not show up, check the browsers console logs. In case you'v
 
 ## Ideas for future improvements:
 
-- **Connection Pools:** As of now a remote access connect session is used per request. This does mean that per HTTP request sent, an operation for the device is created to establish the remote access connect session. This adds a certain delay to every request and creates a bunch of operations in Cumulocity. This could be improved by having a connection pool per device, to reuse remote access connect sessions.
+- ~~**Connection Pools:** As of now a remote access connect session is used per request. This does mean that per HTTP request sent, an operation for the device is created to establish the remote access connect session. This adds a certain delay to every request and creates a bunch of operations in Cumulocity. This could be improved by having a connection pool per device, to reuse remote access connect sessions.~~ **`implemented`**
 
-- **Authorization:** Currently any sort of authorization to the target HTTP server is not supported since the `Authorization` headers would be interpreted by Cumulocity and the access would be probably denied (as the user you are using against the device is probably not existing inside of Cumulocity). In theory an authorization header could be added to the requests as part of the http proxy that is running inside of the microservice.
+- ~~**Authorization:** Currently any sort of authorization to the target HTTP server is not supported since the `Authorization` headers would be interpreted by Cumulocity and the access would be probably denied (as the user you are using against the device is probably not existing inside of Cumulocity). In theory an authorization header could be added to the requests as part of the http proxy that is running inside of the microservice.~~ **`implemented`**
