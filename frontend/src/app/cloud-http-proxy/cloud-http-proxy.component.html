@@ -8,10 +8,10 @@
 </c8y-action-bar-item>
 
 <c8y-action-bar-item placement="right"
-  ><button class="btn btn-link" (click)="openInNewTab()">
+  ><a class="btn btn-link" [href]="safePathToProxyMS$ | async" target="_blank">
     <i [c8yIcon]="'external-link'"></i>&nbsp;
     <span translate>Open in new tab</span>
-  </button></c8y-action-bar-item
+  </a></c8y-action-bar-item
 >
 
 <iframe

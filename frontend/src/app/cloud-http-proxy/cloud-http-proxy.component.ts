@@ -1,11 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {
-  AlertService,
-  AppStateService,
-  CoreModule,
-  Permissions,
-} from '@c8y/ngx-components';
+import { AlertService, CoreModule, Permissions } from '@c8y/ngx-components';
 import { NEVER, Observable, Subject, combineLatest } from 'rxjs';
 import {
   distinctUntilChanged,
@@ -138,16 +133,6 @@ export class CloudHttpProxyComponent implements OnInit, OnDestroy {
       this.alert.success('Tenant option saved.');
     } catch (e) {
       this.alert.addServerFailure(e);
-    }
-  }
-
-  async openInNewTab() {
-    this.alertService.info(
-      'Keep in mind that you can only have one http proxy session at a time.'
-    );
-    const path = await this.pathToProxyMS$.pipe(take(1)).toPromise();
-    if (path) {
-      window.open(path, '_blank')?.focus();
     }
   }
 }
