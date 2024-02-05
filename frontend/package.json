@@ -32,7 +32,7 @@
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
     "@c8y/bootstrap": "1019.2.9",
-    "@c8y/client": "1019.2.9",
+    "@c8y/client": "1019.4.8",
     "@c8y/devkit": "1019.2.9",
     "@c8y/ngx-components": "1019.2.9",
     "@c8y/style": "1019.2.9",
