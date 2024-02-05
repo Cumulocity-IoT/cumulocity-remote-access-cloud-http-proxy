@@ -35,7 +35,7 @@
     "@c8y/client": "1019.2.9",
     "@c8y/devkit": "1019.2.9",
     "@c8y/ngx-components": "1019.2.9",
-    "@c8y/style": "1019.2.9",
+    "@c8y/style": "1019.4.8",
     "@c8y/websdk": "1019.2.9",
     "ngx-bootstrap": "11.0.2",
     "rxjs": "^7.4.0",
