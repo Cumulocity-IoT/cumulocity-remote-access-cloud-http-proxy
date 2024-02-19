@@ -28,7 +28,7 @@
     "agentkeepalive": "^4.5.0",
     "cookie-parse": "^0.4.0",
     "cron": "^3.1.6",
-    "dotenv": "^16.4.1",
+    "dotenv": "^16.4.4",
     "express": "^4.18.2",
     "http-proxy": "^1.18.1",
     "tslib": "^2.6.2",
