@@ -12,6 +12,21 @@ import { CloudHttpProxyTabFactory } from './cloud-http-proxy-tab.factory';
         path: 'cloud-http-proxy/:cloudProxyConfigId',
         tabs: [],
         label: 'dummy',
+        data: {
+          secure: false,
+        },
+        component: CloudHttpProxyComponent,
+        context: ViewContext.Device,
+      },
+    ]),
+    hookRoute([
+      {
+        path: 'secure-cloud-http-proxy/:cloudProxyConfigId',
+        tabs: [],
+        label: 'dummy',
+        data: {
+          secure: true,
+        },
         component: CloudHttpProxyComponent,
         context: ViewContext.Device,
       },

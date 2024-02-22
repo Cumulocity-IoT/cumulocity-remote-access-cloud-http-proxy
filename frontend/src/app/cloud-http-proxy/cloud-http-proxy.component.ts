@@ -31,6 +31,7 @@ export class CloudHttpProxyComponent implements OnInit, OnDestroy {
   details$: Observable<{
     cloudProxyConfigId: string;
     cloudProxyDeviceId: string;
+    secure?: boolean;
   }>;
   destroy = new Subject<void>();
   hasTenantOptionAdminPermission = false;
@@ -47,26 +48,36 @@ export class CloudHttpProxyComponent implements OnInit, OnDestroy {
   ) {
     this.details$ = combineLatest([
       this.activatedRoute.params,
+      this.activatedRoute.data,
       this.activatedRoute.parent?.params || NEVER,
     ]).pipe(
-      map(([paramsFromCurrentRoute, paramsFromParentRoute]) => {
-        const { cloudProxyConfigId } = paramsFromCurrentRoute;
-        const { id: cloudProxyDeviceId } = paramsFromParentRoute;
+      map(
+        ([
+          paramsFromCurrentRoute,
+          dataFromCurrentRoute,
+          paramsFromParentRoute,
+        ]) => {
+          const { secure } = dataFromCurrentRoute;
+          const { cloudProxyConfigId } = paramsFromCurrentRoute;
+          const { id: cloudProxyDeviceId } = paramsFromParentRoute;
 
-        const data = { cloudProxyConfigId, cloudProxyDeviceId };
+          const data = { cloudProxyConfigId, cloudProxyDeviceId, secure };
 
-        if (!cloudProxyConfigId || !cloudProxyDeviceId) {
-          return null as unknown as typeof data;
+          if (!cloudProxyConfigId || !cloudProxyDeviceId) {
+            return null as unknown as typeof data;
+          }
+
+          return data;
         }
-
-        return data;
-      }),
+      ),
       filter((data) => !!data),
       distinctUntilChanged()
     );
     this.pathToProxyMS$ = this.details$.pipe(
-      map(({ cloudProxyConfigId, cloudProxyDeviceId }) => {
-        return `${this.pathToProxyMS}/${cloudProxyDeviceId}/${cloudProxyConfigId}/` as const;
+      map(({ cloudProxyConfigId, cloudProxyDeviceId, secure }) => {
+        return `${this.pathToProxyMS}${
+          secure ? '/s' : ''
+        }/${cloudProxyDeviceId}/${cloudProxyConfigId}/` as const;
       }),
       distinctUntilChanged(),
       tap(() => {
