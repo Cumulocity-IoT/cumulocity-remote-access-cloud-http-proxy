@@ -116,6 +116,12 @@ app.use(
           ""
         );
       },
+      headers: {
+        connection:
+          req.headers?.connection === "close"
+            ? "keep-alive"
+            : req.headers?.connection,
+      },
       autoRewrite: false,
       hostRewrite: hostRewrite(req, true),
       protocolRewrite: (req.headers["x-forwarded-proto"] as string) || "http",
