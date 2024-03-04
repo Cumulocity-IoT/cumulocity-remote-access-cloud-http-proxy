@@ -34,7 +34,11 @@ logger.debug(JSON.stringify(process.env));
 const app = express();
 
 app.get("/health", (req, res) => {
-  res.sendStatus(200);
+  res.status(200).json({
+    memory: process.memoryUsage(),
+    agent: agent.getCurrentStatus(),
+    secureAgent: secureAgent.getCurrentStatus(),
+  });
 });
 
 async function getTarget(
@@ -195,6 +199,7 @@ CronJob.from({
     logger.info("Statistics", {
       memory: process.memoryUsage(),
       agent: agent.getCurrentStatus(),
+      secureAgent: secureAgent.getCurrentStatus(),
     });
   },
   start: true,
