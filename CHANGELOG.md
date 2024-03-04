@@ -1,3 +1,10 @@
+## [2.3.1](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.3.0...v2.3.1) (2024-03-04)
+
+
+### Bug Fixes
+
+* add https statistics to logging and return details on health endpoint ([4f4199d](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/4f4199dd70bc01c0920c48b142a126479ca8018d))
+
 # [2.3.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.2.1...v2.3.0) (2024-03-04)
 
 
