@@ -50,6 +50,7 @@ export default {
         from: '../README.md',
         to: 'README.md',
       },
+      { from: '../CHANGELOG.md', to: 'CHANGELOG.md' },
       { from: '../LICENSE', to: 'LICENSE.txt' },
       { from: '../images', to: 'images' },
     ],
