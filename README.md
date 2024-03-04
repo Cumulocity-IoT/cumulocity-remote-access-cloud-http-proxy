@@ -1,7 +1,7 @@
 # Remote access cloud HTTP proxy
 
 A Cumulocity IoT microservice that allows to proxy HTTP requests through the cloud to a (local) HTTP server running on a Cumulocity IoT connected device or in the accessible network of the device.
-This project contains a backend microservice and a UI plugin. Both must be installed your tenant in order to use this functionality.
+This project contains a backend microservice and a UI plugin. Both must be installed to your tenant in order to use this functionality.
 
 A sample usecase might be to access a configuration UI on your device or to e.g. access an instance of [Node-RED](https://nodered.org/) running on your device:
 ![Demo Node-Red](images/demo-node-red.png)
@@ -26,7 +26,7 @@ This functionality is heavily relying on the [Cloud Remote Access feature of Cum
   c8y tenantoptions update --category jwt --key xsrf-validation.enabled --value false
   ```
 
-- This functionality is currently limited to just communicate via HTTP. HTTPS would be in general also doable, but there is not really a benefit in encrypting the connection to the device another time (as the websocket connection is already encrypted) and it would still not be end-to-end encrypted.
+- Requests through the proxy can be made via both HTTP and HTTPS. For requests made to an HTTPS server, the certificate of the server is not actually validated.
 
 - The web server you are trying to access must be compatible with being served behind a reverse proxy with another path (which is in this case: `/service/cloud-http-proxy/<deviceId>/<remoteAccessConnectConfigId>/`). This might be something you can configure as part of your application, but not all applications support this.
 
@@ -38,7 +38,7 @@ The microservice is written in nodeJS.
 
 It's functionality can be described in the following steps:
 
-1. Accept incoming requests on path: `/service/cloud-http-proxy/<deviceId>/<remoteAccessConnectConfigId>/**/*`
+1. Accept incoming requests on path: `/service/cloud-http-proxy/<deviceId>/<remoteAccessConnectConfigId>/**/*` and `/service/cloud-http-proxy/s/<deviceId>/<remoteAccessConnectConfigId>/**/*` (in case of HTTPS)
 2. The authentication details and the connection details included in the path are taken from the incoming request.
 3. The authentication information is used to create a new remote access connect session. The device ID and remote access connect configuration Id is also required to establish this connection.
 4. After the remote access connect Websocket connection was established successfully, it will send the HTTP request through the Websocket connection to the web server running on the device. The corresponding response is also forwarded.
@@ -55,7 +55,7 @@ For instructions on how to install an UI plugin, please check [here](https://cum
 A new connection can be configured on devices supporting the remote access connect feature.
 The default UI of the remote access connect feature can be used for that.
 
-The name of the configuration should be prefixed with `http:` as this is used by the UI Plugin to identify endpoints that are compatible with it.
+The name of the configuration should be prefixed with either `http:` or `https:` depending on the server you are trying to connect to. This is used by the UI Plugin to identify endpoints that are compatible with it.
 
 The protocol should be set to `PASSTHROUGH`. In case this is not available, please contact your platform administrator to make it available.
 

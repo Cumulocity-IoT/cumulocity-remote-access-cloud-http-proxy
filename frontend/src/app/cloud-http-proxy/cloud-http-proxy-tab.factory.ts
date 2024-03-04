@@ -11,6 +11,7 @@ import { CloudHttpProxyAvailabilityService } from './cloud-http-proxy-available'
 })
 export class CloudHttpProxyTabFactory implements ExtensionFactory<Tab> {
   static remoteAccessConnectPrefix = 'http:';
+  static secureRemoteAccessConnectPrefix = 'https:';
   private canActivate$: Observable<boolean>;
 
   constructor(private proxyAvailability: CloudHttpProxyAvailabilityService) {
@@ -46,16 +47,29 @@ export class CloudHttpProxyTabFactory implements ExtensionFactory<Tab> {
     const httpPrefixedPassthroughConfigs = configs.filter(
       (config) =>
         config.protocol === 'PASSTHROUGH' &&
-        config?.name?.startsWith(
+        (config?.name?.startsWith(
           CloudHttpProxyTabFactory.remoteAccessConnectPrefix
-        )
+        ) ||
+          config?.name?.startsWith(
+            CloudHttpProxyTabFactory.secureRemoteAccessConnectPrefix
+          ))
     );
 
     return this.canActivate$.pipe(
       filter((canActive) => !!canActive),
-      map(() =>
-        this.createTabsForConfigs(httpPrefixedPassthroughConfigs, device)
-      )
+      map(() => [
+        ...this.createTabsForConfigs(
+          httpPrefixedPassthroughConfigs,
+          device,
+          CloudHttpProxyTabFactory.remoteAccessConnectPrefix
+        ),
+        ...this.createTabsForConfigs(
+          httpPrefixedPassthroughConfigs,
+          device,
+          CloudHttpProxyTabFactory.secureRemoteAccessConnectPrefix,
+          true
+        ),
+      ])
     );
   }
 
@@ -65,19 +79,22 @@ export class CloudHttpProxyTabFactory implements ExtensionFactory<Tab> {
       id: string;
       name: string;
     }>,
-    device: IManagedObject
+    device: IManagedObject,
+    prefix: string,
+    secure?: boolean
   ) {
-    return httpPrefixedPassthroughConfigs.map(({ id, name }) => {
-      const newName = name.replace(
-        CloudHttpProxyTabFactory.remoteAccessConnectPrefix,
-        ''
-      );
-      const tab: Tab = {
-        path: `/device/${device.id}/cloud-http-proxy/${id}`,
-        label: `${newName}`,
-        icon: `window-restore`,
-      };
-      return tab;
-    });
+    return httpPrefixedPassthroughConfigs
+      .filter((tmp) => tmp.name.startsWith(prefix))
+      .map(({ id, name }) => {
+        const newName = name.replace(prefix, '');
+        const tab: Tab = {
+          path: `/device/${device.id}/${
+            secure ? 'secure-' : ''
+          }cloud-http-proxy/${id}`,
+          label: `${newName}`,
+          icon: `window-restore`,
+        };
+        return tab;
+      });
   }
 }
