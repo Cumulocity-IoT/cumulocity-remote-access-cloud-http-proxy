@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.2.1...v2.3.0) (2024-03-04)
+
+
+### Features
+
+* add support for connections to https servers ([e55e308](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/e55e3081be42711c1551c0b5777e4752aa1b7f57))
+
 ## [2.2.1](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.2.0...v2.2.1) (2024-02-04)
 
 
