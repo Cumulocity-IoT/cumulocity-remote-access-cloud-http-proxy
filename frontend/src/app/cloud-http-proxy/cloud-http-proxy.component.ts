@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlertService, CoreModule, Permissions } from '@c8y/ngx-components';
+import { AlertService, CoreModule, GainsightService, Permissions, PxEventData } from '@c8y/ngx-components';
 import { NEVER, Observable, Subject, combineLatest } from 'rxjs';
 import {
   distinctUntilChanged,
@@ -44,7 +44,8 @@ export class CloudHttpProxyComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private tenantOptions: TenantOptionsService,
     private alert: AlertService,
-    private permissions: Permissions
+    private permissions: Permissions,
+    private gainsight: GainsightService
   ) {
     this.details$ = combineLatest([
       this.activatedRoute.params,
@@ -75,6 +76,7 @@ export class CloudHttpProxyComponent implements OnInit, OnDestroy {
     );
     this.pathToProxyMS$ = this.details$.pipe(
       map(({ cloudProxyConfigId, cloudProxyDeviceId, secure }) => {
+        this.triggerGainSightEvent('opening-page', { secure, cloudProxyConfigId, cloudProxyDeviceId });
         return `${this.pathToProxyMS}${
           secure ? '/s' : ''
         }/${cloudProxyDeviceId}/${cloudProxyConfigId}/` as const;
@@ -134,6 +136,7 @@ export class CloudHttpProxyComponent implements OnInit, OnDestroy {
   }
 
   async saveAuthInTenantOption() {
+    this.triggerGainSightEvent('save-auth-in-tenant-option', { tenantOptionKey: this.key });
     try {
       await this.tenantOptions.create({
         category: proxyContextPath,
@@ -144,6 +147,14 @@ export class CloudHttpProxyComponent implements OnInit, OnDestroy {
       this.alert.success('Tenant option saved.');
     } catch (e) {
       this.alert.addServerFailure(e);
+    }
+  }
+
+  private triggerGainSightEvent(eventName: string, props?: PxEventData | undefined) {
+    try {
+      this.gainsight.triggerEvent(`cloud-http-proxy-${eventName}`, props);
+    } catch (e) {
+      console.warn('Failed to trigger Gainsight event', e);
     }
   }
 }
