@@ -1,3 +1,11 @@
+## [2.3.2](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.3.1...v2.3.2) (2024-03-05)
+
+
+### Bug Fixes
+
+* add gainsight events for tracking ([12b58d7](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/12b58d7b01899f9bcfb350044618fcf9dff5a893))
+* make gainsight service optional ([645571f](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/645571f14c21321bf404699b5f7bee2228f10cb0))
+
 ## [2.3.1](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.3.0...v2.3.1) (2024-03-04)
 
 
