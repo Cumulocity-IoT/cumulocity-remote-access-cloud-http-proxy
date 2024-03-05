@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlertService, CoreModule, GainsightService, Permissions, PxEventData } from '@c8y/ngx-components';
 import { NEVER, Observable, Subject, combineLatest } from 'rxjs';
@@ -45,7 +45,7 @@ export class CloudHttpProxyComponent implements OnInit, OnDestroy {
     private tenantOptions: TenantOptionsService,
     private alert: AlertService,
     private permissions: Permissions,
-    private gainsight: GainsightService
+    @Optional() private gainsight: GainsightService
   ) {
     this.details$ = combineLatest([
       this.activatedRoute.params,
