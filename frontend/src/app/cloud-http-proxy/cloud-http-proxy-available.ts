@@ -41,7 +41,6 @@ export class CloudHttpProxyAvailabilityService {
         hasRequiredRoles
           ? combineLatest([
               this.ensureMicroserviceIsPresent(),
-              this.ensureTenantOptionEnabled(),
             ])
           : of([false])
       ),
