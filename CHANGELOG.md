@@ -1,3 +1,16 @@
+# [2.4.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.3.3...v2.4.0) (2024-03-21)
+
+
+### Bug Fixes
+
+* **Microservice:** enhance logging in error cases ([9357174](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/93571749c1c4dfc0b0c49f1371a43ab576bea65a))
+* **Plugin:** add hint on console in case microservice was not found ([d7d0960](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/d7d0960d3f8df7a62d55725ce84d2a2c0849f91c))
+
+
+### Features
+
+* **microservice:** add custom user-agent header ([#45](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/issues/45)) ([52278e6](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/52278e63f813af1d776c43e0a99feb528f3f654d))
+
 ## [2.3.3](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.3.2...v2.3.3) (2024-03-21)
 
 
