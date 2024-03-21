@@ -13,7 +13,8 @@
     "isolatedModules": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "strict": false
+    "strict": false,
+    "resolveJsonModule": true
   },
   "include": ["**/*.d.ts", "**/*.ts"],
   "exclude": ["node_modules"]
