@@ -1,3 +1,10 @@
+## [2.3.3](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.3.2...v2.3.3) (2024-03-21)
+
+
+### Bug Fixes
+
+* **Plugin:** allow tabs to show up even if `pass-through.enabled` system option is not set ([ca4960b](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/ca4960b029d0af30adb9df1ab6dd9bb3c4842f46))
+
 ## [2.3.2](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.3.1...v2.3.2) (2024-03-05)
 
 
