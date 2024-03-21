@@ -1,5 +1,6 @@
 import { ConnectionDetails } from "./connection-details";
 import { IncomingHttpHeaders } from "http";
+import { name, version } from "../package.json";
 
 export class HeaderAdjustment {
   private static headersToRemove = ["authorization"];
@@ -10,6 +11,10 @@ export class HeaderAdjustment {
       if (this.headersToRemove.includes(key)) {
         delete headers[key];
         continue;
+      }
+
+      if (key.toLowerCase() === "user-agent") {
+        keysToAdd[key] = `${name}/${version}`;
       }
 
       if (!key.startsWith(this.headerPrefix)) {
