@@ -16,6 +16,7 @@ import {
   map,
   shareReplay,
   switchMap,
+  tap,
 } from 'rxjs/operators';
 import { proxyContextPath } from './cloud-http-proxy.model';
 
@@ -39,9 +40,7 @@ export class CloudHttpProxyAvailabilityService {
       map(() => this.ensureUserHasAllRoles()),
       switchMap((hasRequiredRoles) =>
         hasRequiredRoles
-          ? combineLatest([
-              this.ensureMicroserviceIsPresent(),
-            ])
+          ? combineLatest([this.ensureMicroserviceIsPresent()])
           : of([false])
       ),
       map((res) => res.every((value) => !!value)),
@@ -83,18 +82,14 @@ export class CloudHttpProxyAvailabilityService {
       map(
         (apps) =>
           !!apps.find(({ contextPath }) => contextPath === proxyContextPath)
-      )
-    );
-  }
-
-  async ensureTenantOptionEnabled(): Promise<boolean> {
-    return this.ensureOptionIsSetAsExpected(
-      this.systemOption,
-      {
-        category: 'remoteaccess',
-        key: 'pass-through.enabled',
-      },
-      true
+      ),
+      tap((msPresent) => {
+        if (!msPresent) {
+          console.warn(
+            `Cloud http proxy feature not available as the "${proxyContextPath}" microservice was not found.`
+          );
+        }
+      })
     );
   }
 
