@@ -32,22 +32,50 @@ export class ConnectionDetails {
   ) {}
 
   async extractDetails() {
-    this.getConnectionDetailsFromParams(this.req);
+    try {
+      this.getConnectionDetailsFromParams(this.req);
+    } catch (e) {
+      this.logger.error(
+        `Failed to get connection details from request params.`,
+        {
+          errorObj: e,
+        }
+      );
+      throw e;
+    }
+
     this.isWebsocket = !!this.req.headers.upgrade;
-    this.queryParamsString = ConnectionDetails.getQueryParamsFromHeaders(
-      this.req.headers
-    );
+    try {
+      this.queryParamsString = ConnectionDetails.getQueryParamsFromHeaders(
+        this.req.headers
+      );
+    } catch (e) {
+      this.logger.error(`Failed to generate query params from headers.`, {
+        errorObj: e,
+      });
+      throw e;
+    }
+
     this.originalHeaders = Object.assign({}, this.req.headers);
 
-    const { userId, tenantId, domain } = this.getUserAndTenantFromRequest(
-      this.req
+    try {
+      const { userId, tenantId, domain } = this.getUserAndTenantFromRequest(
+        this.req
+      );
+      this.user = userId;
+      this.tenant = tenantId;
+      this.domain = domain;
+    } catch (e) {
+      this.logger.error(`Failed to extract user and tenant out of request.`, {
+        errorObj: e,
+      });
+      throw e;
+    }
+
+    this.client = await this.getTenantDetailsClient(
+      this.req.headers,
+      this.domain
     );
-
-    this.user = userId;
-    this.tenant = tenantId;
-    this.domain = domain;
-
-    this.client = await this.getTenantDetailsClient(this.req.headers, domain);
 
     if (this.logger.isDebugEnabled()) {
       this.rcaConfig = await this.getRCAConfig();
@@ -85,6 +113,7 @@ export class ConnectionDetails {
       }
     }
     if (!bearerToken) {
+      this.logger.debug("No token found to extract user or tenant from.");
       return undefined;
     }
 
@@ -119,10 +148,20 @@ export class ConnectionDetails {
       if (domainFromCache) {
         domain = domainFromCache;
       } else {
-        const { data: currentTenant } = await initialClient.tenant.current();
+        try {
+          const { data: currentTenant } = await initialClient.tenant.current();
 
-        domain = currentTenant.domainName;
-        domainCache.set(this.tenant, domain);
+          domain = currentTenant.domainName;
+          this.logger.debug(`Retrieved domain name of current tenant`, {
+            domain,
+          });
+          domainCache.set(this.tenant, domain);
+        } catch (e) {
+          this.logger.error(`Failed to retrieve current tenant.`, {
+            errorObj: e,
+          });
+          throw e;
+        }
       }
     }
 
@@ -172,6 +211,10 @@ export class ConnectionDetails {
     const { cloudProxyDeviceId, cloudProxyConfigId } = req.params;
     this.cloudProxyConfigId = cloudProxyConfigId;
     this.cloudProxyDeviceId = cloudProxyDeviceId;
+    this.logger.debug(`Extracted connection details from request params`, {
+      cloudProxyConfigId,
+      cloudProxyDeviceId,
+    });
   }
 
   private async getRCAConfig() {
