@@ -1,3 +1,10 @@
+## [2.4.1](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.4.0...v2.4.1) (2024-03-22)
+
+
+### Bug Fixes
+
+* **microservice:** prefer `authorization` cookie over bearer token in `authorization` header when trying to extract user and tenant information ([5b4058b](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/5b4058bda3b4bc186118f09e99d58d9ed5496bde))
+
 # [2.4.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.3.3...v2.4.0) (2024-03-21)
 
 
