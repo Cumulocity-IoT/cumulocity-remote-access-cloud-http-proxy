@@ -104,34 +104,45 @@ export class ConnectionDetails {
       return extractDetails;
     }
     let bearerToken = "";
-    if (bearerAuthPrefix.test(authorization || "")) {
-      bearerToken = authorization.replace(bearerAuthPrefix, "");
-    } else {
+    try {
       const { authorization: authCookie } = cookieLib.parse(cookie || "");
       if (authCookie) {
         bearerToken = authCookie;
       }
+    } catch (e) {
+      this.logger.error(`Failed to parse cookie.`, { errorObj: e });
+      throw e;
+    }
+    if (!bearerToken && bearerAuthPrefix.test(authorization || "")) {
+      bearerToken = authorization.replace(bearerAuthPrefix, "");
     }
     if (!bearerToken) {
       this.logger.debug("No token found to extract user or tenant from.");
       return undefined;
     }
 
-    const {
-      iss,
-      aud,
-      sub,
-      ten: tenantId,
-    } = JSON.parse(Buffer.from(bearerToken.split(".")[1], "base64").toString());
-
-    const extractDetails = {
-      tenantId,
-      userId: sub,
-      domain: iss || aud || domain,
-    };
-
-    this.logger.debug(`Extracted Details (bearer)`, { extractDetails });
-    return extractDetails;
+    try {
+      const {
+        iss,
+        aud,
+        sub,
+        ten: tenantId,
+      } = JSON.parse(Buffer.from(bearerToken.split(".")[1], "base64").toString());
+      const extractDetails = {
+        tenantId,
+        userId: sub,
+        domain: iss || aud || domain,
+      };
+  
+      this.logger.debug(`Extracted Details (bearer)`, { extractDetails });
+      return extractDetails;
+    } catch (e) {
+      this.logger.error(`Failed to parse JSON from bearerToken.`, {
+        errorObj: e,
+        bearerToken,
+      });
+      throw e;
+    }
   }
 
   private async getTenantDetailsClient(
