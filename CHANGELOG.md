@@ -1,3 +1,10 @@
+## [2.4.2](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.4.1...v2.4.2) (2024-03-22)
+
+
+### Bug Fixes
+
+* **microservice:** allow forwarding auth header if cookie for auth is also present ([97d66b9](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/97d66b9766d8cd4314502757155b55782d867f9f))
+
 ## [2.4.1](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.4.0...v2.4.1) (2024-03-22)
 
 
