@@ -3,9 +3,10 @@ import { IncomingHttpHeaders } from "http";
 import { name, version } from "../package.json";
 
 export class HeaderAdjustment {
-  private static headersToRemove = ["authorization"];
+  private static headersToRemove = [];
   private static headerPrefix = "rca-http-header-";
   static adjust(headers: IncomingHttpHeaders, details: ConnectionDetails) {
+    this.adjustAuthorization(headers);
     const keysToAdd: IncomingHttpHeaders = {};
     for (const [key, value] of Object.entries(headers)) {
       if (this.headersToRemove.includes(key)) {
@@ -30,11 +31,39 @@ export class HeaderAdjustment {
       keysToAdd[newKey] = value;
     }
     Object.assign(headers, keysToAdd);
+  }
+
+  private static adjustAuthorization(headers: IncomingHttpHeaders) {
+    let hadCookieAuth = false;
     if (headers.cookie) {
-      headers.cookie = this.adjustCookie(headers.cookie);
+      const newCookieValue = this.adjustCookie(headers.cookie);
+      if (newCookieValue !== headers.cookie) {
+        hadCookieAuth = true;
+      }
+      headers.cookie = newCookieValue;
       if (headers.cookie === "") {
         delete headers.cookie;
       }
+    }
+
+    if (!hadCookieAuth) {
+      // should not pass basic auth for c8y on
+      if (headers.authorization) {
+        delete headers.authorization;
+      }
+      return;
+    }
+
+    // we want to keep the authorization header if the actual auth was cookie based
+    // but we want to remove the fake basic auth header added by the microservice proxy
+    if (!headers.authorization?.startsWith('Basic ')) {
+      return;
+    }
+
+    const token = headers.authorization.replace(/^Basic\s/, "");
+    const decodedToken = Buffer.from(token, "base64").toString("utf-8");
+    if (decodedToken.endsWith(':<fake password>')) {
+      delete headers.authorization;
     }
   }
 
@@ -43,7 +72,7 @@ export class HeaderAdjustment {
       return currentCookieValue;
     }
 
-    const cookieKeysToReplace = ["authorization", "XSRF-TOKEN", "ahoi"];
+    const cookieKeysToReplace = ["authorization", "XSRF-TOKEN"];
     return cookieKeysToReplace.reduceRight((prev, curr) => {
       return this.removeCookieByName(prev, curr);
     }, currentCookieValue);
