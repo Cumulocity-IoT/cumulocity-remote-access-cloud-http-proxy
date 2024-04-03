@@ -1,4 +1,8 @@
-import { Client, MicroserviceClientRequestAuth } from "@c8y/client";
+import {
+  Client,
+  IFetchResponse,
+  MicroserviceClientRequestAuth,
+} from "@c8y/client";
 import * as http from "http";
 import { RCAConfig } from "./model";
 import { Request } from "express";
@@ -49,6 +53,9 @@ export class ConnectionDetails {
       this.queryParamsString = ConnectionDetails.getQueryParamsFromHeaders(
         this.req.headers
       );
+      this.logger.debug(`Generated query params string from headers`, {
+        queryParamsString: this.queryParamsString,
+      });
     } catch (e) {
       this.logger.error(`Failed to generate query params from headers.`, {
         errorObj: e,
@@ -65,6 +72,11 @@ export class ConnectionDetails {
       this.user = userId;
       this.tenant = tenantId;
       this.domain = domain;
+      this.logger.debug(`Extracted user and tenant from request`, {
+        user: this.user,
+        tenant: this.tenant,
+        domain: this.domain,
+      });
     } catch (e) {
       this.logger.error(`Failed to extract user and tenant out of request.`, {
         errorObj: e,
@@ -77,8 +89,17 @@ export class ConnectionDetails {
       this.domain
     );
 
-    if (this.logger.isDebugEnabled()) {
-      this.rcaConfig = await this.getRCAConfig();
+    this.logger.debug(`Created tenant details client`);
+
+    try {
+      if (this.logger.isDebugEnabled()) {
+        this.rcaConfig = await this.getRCAConfig();
+        this.logger.debug(`Retrieved RCA Config`, {
+          rcaConfig: this.rcaConfig,
+        });
+      }
+    } catch (e) {
+      this.logger.warn(`Failed to retrieve RCA Config.`, { errorObj: e });
     }
   }
 
@@ -127,13 +148,15 @@ export class ConnectionDetails {
         aud,
         sub,
         ten: tenantId,
-      } = JSON.parse(Buffer.from(bearerToken.split(".")[1], "base64").toString());
+      } = JSON.parse(
+        Buffer.from(bearerToken.split(".")[1], "base64").toString()
+      );
       const extractDetails = {
         tenantId,
         userId: sub,
         domain: iss || aud || domain,
       };
-  
+
       this.logger.debug(`Extracted Details (bearer)`, { extractDetails });
       return extractDetails;
     } catch (e) {
@@ -174,6 +197,10 @@ export class ConnectionDetails {
           throw e;
         }
       }
+    }
+
+    if (!domain) {
+      throw Error(`Failed to retrieve domain name for tenant ${this.tenant}`);
     }
 
     this.domain = domain;
@@ -229,13 +256,19 @@ export class ConnectionDetails {
   }
 
   private async getRCAConfig() {
-    const response = await this.client.core.fetch(
-      `/service/remoteaccess/devices/${this.cloudProxyDeviceId}/configurations`
-    );
-    if (response.status !== 200) {
-      throw Error(
-        `Failed to retrieve RCA Config for device: ${this.cloudProxyDeviceId}`
+    let response: IFetchResponse;
+    try {
+      response = await this.client.core.fetch(
+        `/service/remoteaccess/devices/${this.cloudProxyDeviceId}/configurations`
       );
+    } catch (e) {
+      const msg = `Failed to retrieve RCA Configs for device: ${this.cloudProxyDeviceId}`;
+      this.logger.error(msg, { errorObj: e });
+      throw Error(msg);
+    }
+    if (response.status !== 200) {
+      const msg = `Failed to retrieve RCA Config for device: ${this.cloudProxyDeviceId}, wrong status code: ${response.status}`;
+      throw Error(msg);
     }
 
     const configs: RCAConfig[] = await response.json();
