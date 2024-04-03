@@ -1,3 +1,10 @@
+## [2.4.3](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.4.2...v2.4.3) (2024-04-03)
+
+
+### Bug Fixes
+
+* **microservice:** disable timeouts as otherwise websocket connections were closed after ~60-90 seconds ([66b38d5](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/66b38d57ddb777549c5233fa566e8dba67cafd0b))
+
 ## [2.4.2](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.4.1...v2.4.2) (2024-03-22)
 
 
