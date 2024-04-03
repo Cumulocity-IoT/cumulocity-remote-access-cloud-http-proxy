@@ -1,3 +1,10 @@
+# [2.5.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.4.3...v2.5.0) (2024-04-03)
+
+
+### Features
+
+* **microservice:** add support for dealing with cookies as a preparation for allowing to login into a c8y edge instance ([b789902](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/b78990293859481ea00cd93e7c1c03fd15aa943b))
+
 ## [2.4.3](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.4.2...v2.4.3) (2024-04-03)
 
 
