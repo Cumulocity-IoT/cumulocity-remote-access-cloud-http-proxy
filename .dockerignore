@@ -1,0 +1,13 @@
+# Ignore everything
+*
+
+# Allow files and directories
+!/backend
+!/yarn.lock
+
+# Ignore unnecessary files inside allowed directories
+# This should go after the allowed directories
+**/node_modules
+**/*.zip
+**/*.tar
+**/.env

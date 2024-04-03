@@ -2,8 +2,8 @@ FROM node:18-alpine As development
 
 WORKDIR /usr/src/app
 
-COPY --chown=node:node package.json ./
-COPY --chown=node:node ../yarn.lock ./
+COPY --chown=node:node backend/package.json ./
+COPY --chown=node:node yarn.lock ./
 
 RUN yarn install --frozen-lockfile --immutable --non-interactive --prefer-offline
 
@@ -15,11 +15,11 @@ WORKDIR /usr/src/app
 
 COPY --chown=node:node --from=development /usr/src/app/ .
 
-COPY --chown=node:node . .
+COPY --chown=node:node backend .
 
 RUN yarn run build
 
-user node
+USER node
 
 FROM node:18-alpine As productionDeps
 
@@ -28,8 +28,8 @@ WORKDIR /usr/src/app
 ENV NODE_ENV production
 ENV NO_COLOR true
 
-COPY --chown=node:node package.json ./
-COPY --chown=node:node ../yarn.lock ./
+COPY --chown=node:node backend/package.json ./
+COPY --chown=node:node yarn.lock ./
 
 RUN yarn install --frozen-lockfile --immutable --non-interactive --prefer-offline --production && yarn cache clean --force
 
