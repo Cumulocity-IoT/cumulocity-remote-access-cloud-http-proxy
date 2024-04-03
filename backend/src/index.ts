@@ -21,14 +21,18 @@ const logger = createLogger({
 });
 
 const serverStore = new RCAServerStore(logger);
-const agent = new Agent({
+const agentOptions: Agent.HttpOptions = {
   timeout: 60_000, // active socket keepalive for 60 seconds
   freeSocketTimeout: 30_000, // free socket keepalive for 30 seconds
-});
-const secureAgent = new HttpsAgent({
-  timeout: 60_000, // active socket keepalive for 60 seconds
-  freeSocketTimeout: 30_000, // free socket keepalive for 30 seconds
-});
+}
+const agents = {
+  http: new Agent({
+    ...agentOptions
+  }),
+  https: new HttpsAgent({
+    ...agentOptions
+  })
+}
 
 logger.debug(JSON.stringify(process.env));
 const app = express();
@@ -36,8 +40,8 @@ const app = express();
 app.get("/health", (req, res) => {
   res.status(200).json({
     memory: process.memoryUsage(),
-    agent: agent.getCurrentStatus(),
-    secureAgent: secureAgent.getCurrentStatus(),
+    agent: agents.http.getCurrentStatus(),
+    secureAgent: agents.http.getCurrentStatus(),
   });
 });
 
@@ -102,6 +106,14 @@ function getRewriteOptions(
   };
 }
 
+app.use((req, res, next) => {
+  if (req.headers.authorization || req.headers.cookie?.includes('authorization')) {
+    return next();
+  }
+  res.setHeader('WWW-Authenticate', 'Basic realm="My Realm"')
+  res.status(401).send();
+})
+
 app.use("/s/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
   const requestLogger = logger.child({
     method: req.method,
@@ -113,7 +125,7 @@ app.use("/s/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
     const rewrietOptions = getRewriteOptions(req, true);
     const proxy = createProxyServer({
       target,
-      agent: secureAgent,
+      agent: agents.https,
       secure: false,
       ...rewrietOptions,
     });
@@ -158,8 +170,8 @@ app.use("/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
     const rewrietOptions = getRewriteOptions(req, true);
     const proxy = createProxyServer({
       target,
-      agent,
-      ...rewrietOptions,
+      agent: agents.http,
+      ...rewrietOptions
     });
 
     if (req.headers.upgrade) {
@@ -191,16 +203,23 @@ app.use("/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
 });
 
 logger.info(`start listening on port ${process.env.SERVER_PORT}`);
-app.listen(process.env.SERVER_PORT);
+const server = app.listen(process.env.SERVER_PORT);
 
-CronJob.from({
-  cronTime: "0 * * * * *",
-  onTick: () => {
-    logger.info("Statistics", {
-      memory: process.memoryUsage(),
-      agent: agent.getCurrentStatus(),
-      secureAgent: secureAgent.getCurrentStatus(),
-    });
-  },
-  start: true,
-});
+// disable timeouts as otherwise websocket connections are closed after ~60-90 seconds
+server.headersTimeout = 0;
+server.requestTimeout = 0;
+
+if (!process.env.NO_STATISTICS) {
+  CronJob.from({
+    cronTime: "0 * * * * *",
+    onTick: () => {
+      logger.info("Statistics", {
+        memory: process.memoryUsage(),
+        agent: agents.http.getCurrentStatus(),
+        secureAgent: agents.https.getCurrentStatus(),
+      });
+    },
+    start: true,
+  });
+}
+
