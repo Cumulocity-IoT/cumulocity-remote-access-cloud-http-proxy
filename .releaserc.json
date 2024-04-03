@@ -23,6 +23,13 @@
       "@semantic-release/npm",
       {
         "npmPublish": false,
+        "pkgRoot": "/"
+      }
+    ],
+    [
+      "@semantic-release/npm",
+      {
+        "npmPublish": false,
         "pkgRoot": "frontend"
       }
     ],
@@ -46,7 +53,8 @@
           "CHANGELOG.md",
           "**/package.json",
           "**/package-lock.json",
-          "**/cumulocity.json"
+          "**/cumulocity.json",
+          "yarn.lock"
         ],
         "message": "ci(release): ${nextRelease.version}\n\n${nextRelease.notes}"
       }
@@ -54,13 +62,13 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "cd backend && npm run build:release"
+        "prepareCmd": "yarn install --frozen-lockfile --immutable --non-interactive --prefer-offline"
       }
     ],
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "cd frontend && npm ci && npm run build:release"
+        "prepareCmd": "yarn run build:release"
       }
     ],
     [

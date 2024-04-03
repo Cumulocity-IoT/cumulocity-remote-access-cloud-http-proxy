@@ -5,16 +5,15 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/frontend" # Location of package manifests
+  - package-ecosystem: "yarn" # See documentation for possible values
+    directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
     assignees:
       - "reey"
     labels:
-      - "npm"
+      - "yarn"
       - "dependencies"
-      - "c8y"
     reviewers:
       - "reey"
     groups:
@@ -24,22 +23,11 @@ updates:
         update-types:
           - "minor"
           - "patch"
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/backend" # Location of package manifests
-    schedule:
-      interval: "weekly"
-    assignees:
-      - "reey"
-    labels:
-      - "npm"
-      - "dependencies"
-      - "c8y"
-    reviewers:
-      - "reey"
-    groups:
-      web-sdk:
+      angular:
         patterns:
-          - "@c8y/*"
+          - "@angular/*"
+          - "@angular-devkit/*"
+          - "@schematics/angular"
         update-types:
           - "minor"
           - "patch"
