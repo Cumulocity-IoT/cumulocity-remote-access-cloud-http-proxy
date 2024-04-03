@@ -17,7 +17,7 @@ COPY --chown=node:node --from=development /usr/src/app/ .
 
 COPY --chown=node:node . .
 
-RUN npm run build
+RUN yarn run build
 
 user node
 
