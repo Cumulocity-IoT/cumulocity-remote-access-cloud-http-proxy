@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.2.12",
-    "@angular/cli": "^16.2.12",
+    "@angular/cli": "^17.3.3",
     "@angular/compiler-cli": "^16.2.0",
     "@c8y/widget-plugin": "1019.6.11",
     "@types/jasmine": "~4.3.0",
