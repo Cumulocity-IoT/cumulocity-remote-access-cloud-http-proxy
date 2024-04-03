@@ -10,6 +10,7 @@ import { HeaderAdjustment } from "./header-adjustment";
 import { RCAServerStore } from "./rca-server-store";
 import Agent from "agentkeepalive";
 import { HttpsAgent } from "agentkeepalive";
+import * as http from "http";
 
 dotenv.config();
 
@@ -45,6 +46,14 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.use((req, res, next) => {
+  if (req.headers.authorization || req.headers.cookie?.includes('authorization')) {
+    return next();
+  }
+  res.setHeader('WWW-Authenticate', 'Basic realm="My Realm"')
+  res.status(401).send();
+});
+
 async function getTarget(
   req: express.Request<
     {
@@ -63,6 +72,7 @@ async function getTarget(
   } catch (e) {
     requestLogger.error("Failed to retrieve details", {
       e,
+      errorMessage: e.errorMessage,
       headers: req.headers,
     });
     throw e;
@@ -96,23 +106,40 @@ function hostRewrite(req: express.Request<any>, secure: boolean) {
 
 function getRewriteOptions(
   req: express.Request<any>,
-  secure?: boolean
+  secure?: boolean,
+  hasCustomHost?: boolean
 ): Server.ServerOptions {
+  const { "x-forwarded-host": forwardedHost } = req.headers;
   return {
     autoRewrite: false,
     hostRewrite: hostRewrite(req, secure),
-    changeOrigin: true,
+    changeOrigin: !hasCustomHost,
     protocolRewrite: (req.headers["x-forwarded-proto"] as string) || "http",
+    cookieDomainRewrite:
+        typeof forwardedHost === "string" ? `.${forwardedHost.replace(/:.*$/, '')}` : undefined,
+    cookiePathRewrite: `/service/cloud-http-proxy${secure ? '/s' : ''}/${req.params.cloudProxyDeviceId}/${req.params.cloudProxyConfigId}/`,
   };
 }
 
-app.use((req, res, next) => {
-  if (req.headers.authorization || req.headers.cookie?.includes('authorization')) {
-    return next();
-  }
-  res.setHeader('WWW-Authenticate', 'Basic realm="My Realm"')
-  res.status(401).send();
-})
+function hasCustomHostHeader(req: express.Request, deviceId: string, configId: string) {
+  const headerToLookoutFor = `rca-http-header-host-${deviceId}-${configId}`;
+  return !!req.headers[headerToLookoutFor];
+}
+
+function prefixCookiesToBeSet(proxy: Server<http.IncomingMessage, http.ServerResponse<http.IncomingMessage>>) {
+  proxy.on('proxyRes', (response) => {
+    const cookiesToSet = response.headers["set-cookie"];
+    if (!cookiesToSet?.length) {
+      return;
+    }
+
+    const adjustedCookies = cookiesToSet.map((cookie: string) => {
+      return `cloud-http-proxy-${cookie}`;
+    });
+
+    response.headers["set-cookie"] = adjustedCookies;
+  });
+}
 
 app.use("/s/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
   const requestLogger = logger.child({
@@ -120,14 +147,16 @@ app.use("/s/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
     url: req.url,
     params: req.params,
   });
+
   try {
+    const hasCustomHost = hasCustomHostHeader(req, req.params.cloudProxyDeviceId, req.params.cloudProxyConfigId);
     const target = await getTarget(req, requestLogger, true);
-    const rewrietOptions = getRewriteOptions(req, true);
+    const rewriteOptions = getRewriteOptions(req, true, hasCustomHost);
     const proxy = createProxyServer({
       target,
       agent: agents.https,
       secure: false,
-      ...rewrietOptions,
+      ...rewriteOptions,
     });
 
     if (req.headers.upgrade) {
@@ -137,6 +166,8 @@ app.use("/s/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
       });
       return;
     }
+
+    prefixCookiesToBeSet(proxy);
 
     proxy.web(
       req,
@@ -166,12 +197,13 @@ app.use("/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
   });
 
   try {
+    const hasCustomHost = hasCustomHostHeader(req, req.params.cloudProxyDeviceId, req.params.cloudProxyConfigId);
     const target = await getTarget(req, requestLogger);
-    const rewrietOptions = getRewriteOptions(req, true);
+    const rewriteOptions = getRewriteOptions(req, true, hasCustomHost);
     const proxy = createProxyServer({
       target,
       agent: agents.http,
-      ...rewrietOptions
+      ...rewriteOptions,
     });
 
     if (req.headers.upgrade) {
@@ -181,6 +213,8 @@ app.use("/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
       });
       return;
     }
+
+    prefixCookiesToBeSet(proxy);
 
     proxy.web(
       req,
