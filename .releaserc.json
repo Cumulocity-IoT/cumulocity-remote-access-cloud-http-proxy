@@ -51,9 +51,8 @@
       {
         "assets": [
           "CHANGELOG.md",
-          "**/package.json",
-          "**/package-lock.json",
-          "**/cumulocity.json",
+          "*/package.json",
+          "*/cumulocity.json",
           "yarn.lock"
         ],
         "message": "ci(release): ${nextRelease.version}\n\n${nextRelease.notes}"
