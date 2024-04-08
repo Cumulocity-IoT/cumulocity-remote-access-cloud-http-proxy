@@ -1,27 +1,27 @@
 {
-    "name": "cumulocity-remote-access-cloud-http-proxy",
-    "private": true,
-    "version": "2.4.3",
-    "author": "Tristan Bastian",
-    "description": "Allows to proxy HTTP requests through the cloud to an HTTP server running on a Cumulocity IoT connected device.",
-    "scripts": {
-        "backend:dev": "yarn workspace cloud-http-proxy dev",
-        "build:release": "yarn workspace cloud-http-proxy build:release && yarn workspace remote-access-cloud-http-proxy-ui build:release"
-    },
-    "license": "Apache-2.0",
-    "bugs": {
-        "url": "https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/issues"
-    },
-    "homepage": "https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy#readme",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy.git"
-    },
-    "workspaces": [
-        "backend",
-        "frontend"
-    ],
-    "devDependencies": {
-        "autoprefixer": "^10.4.12"
-    }
+  "name": "cumulocity-remote-access-cloud-http-proxy",
+  "private": true,
+  "version": "2.4.3",
+  "author": "Tristan Bastian",
+  "description": "Allows to proxy HTTP requests through the cloud to an HTTP server running on a Cumulocity IoT connected device.",
+  "scripts": {
+    "backend:dev": "yarn workspace cloud-http-proxy dev",
+    "build:release": "yarn workspace cloud-http-proxy build:release && yarn workspace remote-access-cloud-http-proxy-ui build:release"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/issues"
+  },
+  "homepage": "https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy.git"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "devDependencies": {
+    "autoprefixer": "^10.4.12"
+  }
 }

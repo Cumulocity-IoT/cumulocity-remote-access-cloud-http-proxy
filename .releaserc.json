@@ -51,6 +51,7 @@
       {
         "assets": [
           "CHANGELOG.md",
+          "package.json",
           "*/package.json",
           "*/cumulocity.json",
           "yarn.lock"
