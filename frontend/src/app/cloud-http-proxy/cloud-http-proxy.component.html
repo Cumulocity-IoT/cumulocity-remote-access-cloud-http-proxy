@@ -1,10 +1,8 @@
-<c8y-action-bar-item *ngIf="hasTenantOptionAdminPermission" placement="left">
-  <div class="row">
-    <input type="text" [(ngModel)]="value" />
-    <button class="btn btn-link" (click)="saveAuthInTenantOption()">
-      Save
+<c8y-action-bar-item *c8yIfAllowed="['ROLE_OPTION_MANAGEMENT_ADMIN']" placement="left">
+    <button class="btn btn-link" (click)="openSettingsModal()">
+      <i c8yIcon="wrench"></i>
+      Configure
     </button>
-  </div>
 </c8y-action-bar-item>
 
 <c8y-action-bar-item placement="right"

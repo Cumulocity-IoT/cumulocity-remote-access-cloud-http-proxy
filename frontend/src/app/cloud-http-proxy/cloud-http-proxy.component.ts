@@ -1,21 +1,26 @@
-import { Component, OnDestroy, OnInit, Optional } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlertService, CoreModule, GainsightService, Permissions, PxEventData } from '@c8y/ngx-components';
-import { NEVER, Observable, Subject, combineLatest } from 'rxjs';
+import { CoreModule } from '@c8y/ngx-components';
+import {
+  NEVER,
+  Observable,
+  Subject,
+  combineLatest,
+  firstValueFrom,
+} from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
   map,
   shareReplay,
-  switchMap,
-  take,
-  takeUntil,
   tap,
 } from 'rxjs/operators';
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { proxyContextPath } from './cloud-http-proxy.model';
-import { TenantOptionsService } from '@c8y/client';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { CloudHttpProxySettingsComponent } from './cloud-http-proxy-settings/cloud-http-proxy-settings.component';
+import { ProxyTrackingService } from './proxy-tracking.service';
 
 @Component({
   selector: 'remote-access-cloud-http-proxy',
@@ -23,7 +28,7 @@ import { TenantOptionsService } from '@c8y/client';
   standalone: true,
   imports: [CoreModule, NgIf, AsyncPipe, NgClass],
 })
-export class CloudHttpProxyComponent implements OnInit, OnDestroy {
+export class CloudHttpProxyComponent implements OnDestroy {
   private readonly pathToProxyMS = `/service/${proxyContextPath}` as const;
   pathToProxyMS$: Observable<string>;
   safePathToProxyMS$: Observable<SafeResourceUrl>;
@@ -34,18 +39,14 @@ export class CloudHttpProxyComponent implements OnInit, OnDestroy {
     secure?: boolean;
   }>;
   destroy = new Subject<void>();
-  hasTenantOptionAdminPermission = false;
   key = '';
   value = '';
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private alertService: AlertService,
     private sanitizer: DomSanitizer,
-    private tenantOptions: TenantOptionsService,
-    private alert: AlertService,
-    private permissions: Permissions,
-    @Optional() private gainsight: GainsightService
+    private modal: BsModalService,
+    private tracking: ProxyTrackingService
   ) {
     this.details$ = combineLatest([
       this.activatedRoute.params,
@@ -76,7 +77,11 @@ export class CloudHttpProxyComponent implements OnInit, OnDestroy {
     );
     this.pathToProxyMS$ = this.details$.pipe(
       map(({ cloudProxyConfigId, cloudProxyDeviceId, secure }) => {
-        this.triggerGainSightEvent('opening-page', { secure, cloudProxyConfigId, cloudProxyDeviceId });
+        this.tracking.triggerGainSightEvent('opening-page', {
+          secure,
+          cloudProxyConfigId,
+          cloudProxyDeviceId,
+        });
         return `${this.pathToProxyMS}${
           secure ? '/s' : ''
         }/${cloudProxyDeviceId}/${cloudProxyConfigId}/` as const;
@@ -90,41 +95,6 @@ export class CloudHttpProxyComponent implements OnInit, OnDestroy {
     this.safePathToProxyMS$ = this.pathToProxyMS$.pipe(
       map((url) => this.sanitizer.bypassSecurityTrustResourceUrl(url))
     );
-
-    this.hasTenantOptionAdminPermission = this.permissions.hasRole(
-      'ROLE_OPTION_MANAGEMENT_ADMIN'
-    );
-  }
-
-  ngOnInit(): void {
-    if (!this.hasTenantOptionAdminPermission) {
-      return;
-    }
-    this.details$
-      .pipe(
-        takeUntil(this.destroy),
-        switchMap(({ cloudProxyConfigId, cloudProxyDeviceId }) =>
-          this.getTenantOption(cloudProxyConfigId, cloudProxyDeviceId)
-        )
-      )
-      .subscribe(([key, value]) => {
-        this.key = key;
-        this.value = value;
-      });
-  }
-
-  async getTenantOption(configId: string, deviceId: string) {
-    const key = `credentials.rca-http-header-authorization-${deviceId}-${configId}`;
-    try {
-      const { data: option } = await this.tenantOptions.detail({
-        category: proxyContextPath,
-        key,
-      });
-      return [key, option.value || ''] as const;
-    } catch (e) {
-      // do nothing
-    }
-    return [key, ''] as const;
   }
 
   ngOnDestroy(): void {
@@ -135,26 +105,12 @@ export class CloudHttpProxyComponent implements OnInit, OnDestroy {
     this.showLoader = false;
   }
 
-  async saveAuthInTenantOption() {
-    this.triggerGainSightEvent('save-auth-in-tenant-option', { tenantOptionKey: this.key });
-    try {
-      await this.tenantOptions.create({
-        category: proxyContextPath,
-        key: this.key,
-        value: this.value,
-      });
-      this.value = `<<Encrypted>>`;
-      this.alert.success('Tenant option saved.');
-    } catch (e) {
-      this.alert.addServerFailure(e);
-    }
-  }
-
-  private triggerGainSightEvent(eventName: string, props?: PxEventData | undefined) {
-    try {
-      this.gainsight.triggerEvent(`cloud-http-proxy-${eventName}`, props);
-    } catch (e) {
-      console.warn('Failed to trigger Gainsight event', e);
-    }
+  async openSettingsModal() {
+    const { cloudProxyConfigId, cloudProxyDeviceId } = await firstValueFrom(
+      this.details$
+    );
+    const modalRef = this.modal.show(CloudHttpProxySettingsComponent, {
+      initialState: { cloudProxyDeviceId, cloudProxyConfigId },
+    });
   }
 }

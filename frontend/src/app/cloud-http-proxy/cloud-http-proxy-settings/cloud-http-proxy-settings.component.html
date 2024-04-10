@@ -1,0 +1,119 @@
+<div class="viewport-modal">
+  <div class="modal-header dialog-header">
+    <i c8yIcon="wrench"></i>
+    <h4 id="modal-title">{{ "Cloud HTTP proxy configuration" | translate }}</h4>
+  </div>
+  <div class="modal-inner-scroll">
+    <div id="modal-body" class="bg-component">
+      <c8y-loading *ngIf="loading; else content"></c8y-loading>
+      <ng-template #content>
+        <div class="p-4">
+          <p>
+            This section allows you to define HTTP headers that should be set by
+            the proxy microservice. You could e.g. set an
+            <b>authorization</b> header containing credentials for the http
+            server you are trying to access. In some cases you might need to
+            also specify a <b>host</b> header, in case the http server depends
+            on the actual host that was used to access it.
+          </p>
+          <div *ngIf="entries | keyvalue as currentHeaders">
+            <fieldset class="c8y-fieldset" *ngIf="currentHeaders?.length">
+              <legend translate>Current headers</legend>
+              <div
+                *ngFor="let item of currentHeaders"
+                class="d-flex j-c-center"
+              >
+                <c8y-form-group>
+                  <label for="headerValue">{{ item.value.cleanedKey }}</label>
+                  <div class="input-group">
+                    <input
+                      class="form-control"
+                      id="headerValue"
+                      [ngModel]="item.value.value"
+                      type="text"
+                      placeholder="HTTP header e.g. Basic [...]"
+                      disabled=""
+                    />
+                    <div class="input-group-btn">
+                      <button
+                        class="btn-dot btn-dot--danger"
+                        (click)="removeSetting(item.key)"
+                        [attr.aria-label]="'Remove'"
+                      >
+                        <i c8yIcon="minus-circle"></i>
+                      </button>
+                    </div>
+                  </div>
+                </c8y-form-group>
+              </div>
+            </fieldset>
+          </div>
+
+          <div>
+            <fieldset class="c8y-fieldset">
+              <legend translate>New header</legend>
+              <div class="d-flex a-i-center j-c-around">
+                <c8y-form-group>
+                  <label for="headerKey" translate>HTTP header</label>
+                  <input
+                    class="form-control"
+                    id="headerKey"
+                    [(ngModel)]="newValue.key"
+                    type="text"
+                    placeholder="HTTP header e.g. Authorization"
+                  />
+                </c8y-form-group>
+
+                <c8y-form-group>
+                  <label for="headerValue" translate>HTTP header value</label>
+                  <input
+                    class="form-control"
+                    id="headerValue"
+                    [(ngModel)]="newValue.value"
+                    type="text"
+                    placeholder="HTTP header e.g. Basic [...]"
+                  />
+                </c8y-form-group>
+
+                <c8y-form-group>
+                  <label for="encryptTenantOption" class="c8y-checkbox">
+                    <input
+                      class="form-control"
+                      id="encryptTenantOption"
+                      [(ngModel)]="newValue.encrypt"
+                      type="checkbox"
+                    />
+                    <span></span>
+                    <span translate>Encrypt</span>
+                  </label>
+                </c8y-form-group>
+              </div>
+              <div class="d-flex a-i-center j-c-around">
+                <button
+                  type="button"
+                  class="btn btn-default m-b-8"
+                  (click)="addHeader()"
+                  [disabled]="!newValue.value || !newValue.key"
+                >
+                  <i c8yIcon="plus"></i>
+                  Add Header
+                </button>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      class="btn btn-primary"
+      type="button"
+      title="{{ 'Close' | translate }}"
+      (click)="close()"
+    >
+      {{ "Close" | translate }}
+    </button>
+  </div>
+</div>

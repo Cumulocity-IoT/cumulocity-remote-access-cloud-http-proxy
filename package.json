@@ -6,7 +6,8 @@
   "description": "Allows to proxy HTTP requests through the cloud to an HTTP server running on a Cumulocity IoT connected device.",
   "scripts": {
     "backend:dev": "yarn workspace cloud-http-proxy dev",
-    "build:release": "yarn workspace cloud-http-proxy build:release && yarn workspace remote-access-cloud-http-proxy-ui build:release"
+    "build:release": "yarn workspace cloud-http-proxy build:release && yarn workspace remote-access-cloud-http-proxy-ui build:release",
+    "frontend:dev": "yarn workspace remote-access-cloud-http-proxy-ui start --shell devicemanagement"
   },
   "license": "Apache-2.0",
   "bugs": {
