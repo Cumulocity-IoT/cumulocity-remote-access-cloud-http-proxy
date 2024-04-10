@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.5.0...v2.6.0) (2024-04-10)
+
+
+### Features
+
+* **frontend:** add UI dialog to configure http headers that will be added by the microserivce to requests going to the http servers ([f2ad509](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/f2ad509943f1129065aaafddd1eb7a925dbaf3d6))
+
 # [2.5.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.4.3...v2.5.0) (2024-04-03)
 
 
