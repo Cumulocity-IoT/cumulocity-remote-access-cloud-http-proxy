@@ -5,6 +5,11 @@ import { ExtensionFactory, Tab, ViewContext } from '@c8y/ngx-components';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { CloudHttpProxyAvailabilityService } from './cloud-http-proxy-available';
+import {
+  CloudHTTPProxyPathConfig,
+  CloudHTTPProxyPathConfigs,
+  RemoteAccessService,
+} from './cloud-http-proxy-path/remote-access.service';
 
 @Injectable({
   providedIn: 'root',
@@ -86,15 +91,50 @@ export class CloudHttpProxyTabFactory implements ExtensionFactory<Tab> {
     return httpPrefixedPassthroughConfigs
       .filter((tmp) => tmp.name.startsWith(prefix))
       .map(({ id, name }) => {
-        const newName = name.replace(prefix, '');
-        const tab: Tab = {
-          path: `/device/${device.id}/${
-            secure ? 'secure-' : ''
-          }cloud-http-proxy/${id}`,
-          label: `${newName}`,
-          icon: `window-restore`,
-        };
-        return tab;
-      });
+        const tabs = this.getCustomPathTabs(id, device, secure);
+        if (tabs.length) {
+          return tabs;
+        }
+        return [this.getDefaultTab(name, prefix, device, secure, id)];
+      }).flat();
+  }
+
+  private getCustomPathTabs(
+    configId: string,
+    device: IManagedObject,
+    secure?: boolean
+  ) {
+    const customPathConfigs: CloudHTTPProxyPathConfigs =
+      device[RemoteAccessService.pathFragment] || {};
+    const customPathConfigsForId: CloudHTTPProxyPathConfig[] =
+      customPathConfigs[configId] || [];
+    return customPathConfigsForId.map((config, index) => {
+      const tab: Tab = {
+        path: `/device/${device.id}/${
+          secure ? 'secure-' : ''
+        }cloud-http-proxy/${configId}/${index}`,
+        label: config.label,
+        icon: `window-restore`,
+      };
+      return tab;
+    });
+  }
+
+  private getDefaultTab(
+    name: string,
+    prefix: string,
+    device: IManagedObject,
+    secure: boolean | undefined,
+    id: string
+  ) {
+    const newName = name.replace(prefix, '');
+    const tab: Tab = {
+      path: `/device/${device.id}/${
+        secure ? 'secure-' : ''
+      }cloud-http-proxy/${id}`,
+      label: `${newName}`,
+      icon: `window-restore`,
+    };
+    return tab;
   }
 }
