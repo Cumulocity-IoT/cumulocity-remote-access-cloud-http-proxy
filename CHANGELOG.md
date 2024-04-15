@@ -1,3 +1,10 @@
+# [2.8.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.7.0...v2.8.0) (2024-04-15)
+
+
+### Features
+
+* **frontend:** add support for sub paths ([#67](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/issues/67)) ([b0c7090](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/b0c70906a8a0f21b68bfe82fc583b990779c1d90))
+
 # [2.7.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.6.0...v2.7.0) (2024-04-15)
 
 
