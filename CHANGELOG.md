@@ -1,3 +1,10 @@
+# [2.7.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.6.0...v2.7.0) (2024-04-15)
+
+
+### Features
+
+* **frontend:** unlock passthrough feature even on environments where passthrough option is not set ([66c5214](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/commit/66c52147982fa1ff167794ea32a7c389a533ee61))
+
 # [2.6.0](https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/compare/v2.5.0...v2.6.0) (2024-04-10)
 
 
