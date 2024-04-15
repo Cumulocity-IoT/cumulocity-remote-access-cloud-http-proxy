@@ -53,8 +53,7 @@
           "CHANGELOG.md",
           "package.json",
           "*/package.json",
-          "*/cumulocity.json",
-          "yarn.lock"
+          "*/cumulocity.json"
         ],
         "message": "ci(release): ${nextRelease.version}\n\n${nextRelease.notes}"
       }
