@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { CloudHttpProxyComponent } from './cloud-http-proxy.component';
 import { ViewContext, hookRoute, hookTab } from '@c8y/ngx-components';
 import { CloudHttpProxyTabFactory } from './cloud-http-proxy-tab.factory';
+import { UnlockPassthroughFeatureModule } from '../unlock-passthrough-feature/unlock-passthrough-feature.module';
 
 @NgModule({
-  imports: [CommonModule, CloudHttpProxyComponent],
+  imports: [CommonModule, CloudHttpProxyComponent, UnlockPassthroughFeatureModule],
   providers: [
     hookRoute([
       {
