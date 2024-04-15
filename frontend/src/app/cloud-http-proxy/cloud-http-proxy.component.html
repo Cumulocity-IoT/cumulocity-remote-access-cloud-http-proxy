@@ -1,8 +1,38 @@
-<c8y-action-bar-item *c8yIfAllowed="['ROLE_OPTION_MANAGEMENT_ADMIN']" placement="left">
-    <button class="btn btn-link" (click)="openSettingsModal()">
-      <i c8yIcon="wrench"></i>
-      Configure
-    </button>
+<c8y-action-bar-item [itemClass]="'navbar-form'">
+  <div
+  class="dropdown"
+  dropdown
+  #basicDropdown="bs-dropdown"
+>
+  <button
+    type="button"
+    title="dropdown-toggle"
+    dropdownToggle
+    class="btn btn-default dropdown-toggle c8y-dropdown"
+  >
+    <i c8yIcon="wrench"></i>
+    <span>&nbsp;</span>
+    <span>Configure</span>
+    <span class="caret"></span>
+  </button>
+  <ul
+    class="dropdown-menu"
+    *dropdownMenu
+  >
+    <li>
+      <button type="button" (click)="openSettingsModal()">
+        <i c8yIcon="wrench"></i>
+        {{'Headers' | translate}}
+      </button>
+    </li>
+    <li>
+      <button type="button" (click)="openPathsModal()">
+        <i c8yIcon="wrench"></i>
+        {{'Paths' | translate}}
+      </button>
+    </li>
+  </ul>
+</div>
 </c8y-action-bar-item>
 
 <c8y-action-bar-item placement="right"

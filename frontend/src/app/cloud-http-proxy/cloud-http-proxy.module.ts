@@ -22,7 +22,31 @@ import { UnlockPassthroughFeatureModule } from '../unlock-passthrough-feature/un
     ]),
     hookRoute([
       {
+        path: 'cloud-http-proxy/:cloudProxyConfigId/:cloudProxyPathIndex',
+        tabs: [],
+        label: 'dummy',
+        data: {
+          secure: false,
+        },
+        component: CloudHttpProxyComponent,
+        context: ViewContext.Device,
+      },
+    ]),
+    hookRoute([
+      {
         path: 'secure-cloud-http-proxy/:cloudProxyConfigId',
+        tabs: [],
+        label: 'dummy',
+        data: {
+          secure: true,
+        },
+        component: CloudHttpProxyComponent,
+        context: ViewContext.Device,
+      },
+    ]),
+    hookRoute([
+      {
+        path: 'secure-cloud-http-proxy/:cloudProxyConfigId/:cloudProxyPathIndex',
         tabs: [],
         label: 'dummy',
         data: {
