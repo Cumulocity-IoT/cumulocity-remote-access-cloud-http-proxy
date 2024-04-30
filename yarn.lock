@@ -1436,18 +1436,18 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
-"@c8y/bootstrap@1019.19.7":
-  version "1019.19.7"
-  resolved "https://registry.yarnpkg.com/@c8y/bootstrap/-/bootstrap-1019.19.7.tgz#52c5acedd137e45cde4deff8b9fbccdf97df85c9"
-  integrity sha512-UeTkNIv71ry94nzrUuAhhtJMJc+aUz5WCjc1nRel/vduCrFa21Ma+jFEuWu7xFNHnLDOkfNDu7qDjk/vMq7E9g==
+"@c8y/bootstrap@1019.21.1":
+  version "1019.21.1"
+  resolved "https://registry.yarnpkg.com/@c8y/bootstrap/-/bootstrap-1019.21.1.tgz#98dcfa28dac4cb44064eb816533702218f7283db"
+  integrity sha512-Xb/llwtw54lezgmLWWhFIuFxDz3d1MCuBW36vILWdCsRjOZSBbeBckR9/JbtBYkrAB55FvwcFo5ISm8ja2fxRQ==
   dependencies:
     chroma-js "2.4.2"
     lodash "4.17.21"
 
-"@c8y/client@1019.19.7", "@c8y/client@^1019.19.7":
-  version "1019.19.7"
-  resolved "https://registry.yarnpkg.com/@c8y/client/-/client-1019.19.7.tgz#72b22c3e6747bc3a9254db5d71a20beb61068d62"
-  integrity sha512-KenRj0LODY0fNO6EvUFzSnXUTdUM/mG3kvNs3EgJdvX8i7g+iQ8fCL4F3WqRb0aKLZ4fU/saZiPtvXLLwrlHFg==
+"@c8y/client@1019.21.1", "@c8y/client@^1019.21.1":
+  version "1019.21.1"
+  resolved "https://registry.yarnpkg.com/@c8y/client/-/client-1019.21.1.tgz#0e2e92812cb16a08b3b0def7adbb049cd0576e09"
+  integrity sha512-sMbT+qBNOB1e0yiJPn6cjQH8cP3p1Cti3/oa10NxgrchSrBrr3fbX7dniTkfNqRuMclO22b0q1CYY5Hldv7oQA==
   dependencies:
     "@types/cometd" "4.0.8"
     "@types/node" "18"
@@ -1458,10 +1458,10 @@
     form-data "4.0.0"
     isomorphic-cometd "1.1.0"
 
-"@c8y/devkit@1019.19.7":
-  version "1019.19.7"
-  resolved "https://registry.yarnpkg.com/@c8y/devkit/-/devkit-1019.19.7.tgz#cfc3945ec2cb75b259ace2bd707bd6e565445d0a"
-  integrity sha512-CAJkThJ6JkqF4HvfwRliLBySaYLLueUSp25iPbd/o8i06ApvToMsba+mIrh9enYpXQ4/e9zsUbEPDAvKm3OS4g==
+"@c8y/devkit@1019.21.1":
+  version "1019.21.1"
+  resolved "https://registry.yarnpkg.com/@c8y/devkit/-/devkit-1019.21.1.tgz#8e4a59ef4f310f81125b6f610aa9d7389f87f1aa"
+  integrity sha512-VFmksVrMkxql89zwGST9A/4PizziQ10/vJeHResp9klMhXmbyLNOY9eKvZGB8b5M/B9cIcCd3H26YMbac+lYdA==
   dependencies:
     "@babel/cli" "7.23.4"
     "@babel/core" "^7.12.0"
@@ -1473,7 +1473,7 @@
     "@babel/plugin-syntax-dynamic-import" "7.8.3"
     "@babel/plugin-transform-async-to-generator" "^7.18.6"
     "@babel/preset-env" "^7.23.8"
-    "@c8y/client" "1019.19.7"
+    "@c8y/client" "1019.21.1"
     "@schematics/angular" "^16.2.10"
     JSONPath "0.11.2"
     angular-gettext-tools "2.5.3"
@@ -1510,12 +1510,12 @@
     webpack-sources "^3.2.3"
     zip-dir "2.0.0"
 
-"@c8y/ngx-components@1019.19.7":
-  version "1019.19.7"
-  resolved "https://registry.yarnpkg.com/@c8y/ngx-components/-/ngx-components-1019.19.7.tgz#554cfffdd7853edcdb598918909f321d905e0748"
-  integrity sha512-QVBQC7Zl2pw3Uhk/kjEqZPBB/EyRp21WcpjP8woCg+JLtczLi7YBWnoRKK67CdjQQPOcKkovna3vP+r7RDC6qw==
+"@c8y/ngx-components@1019.21.1":
+  version "1019.21.1"
+  resolved "https://registry.yarnpkg.com/@c8y/ngx-components/-/ngx-components-1019.21.1.tgz#52a8259ae4150ed152e613a64bfea15d2bf45264"
+  integrity sha512-e5GrtgZTCt2Q8MUblR6gHyz3QiFh4Z/EWVQTiqnDC88ZnkMS7jg4AWTi/NytQqUPvex3wEugmfYLGwLHyQ/9Fg==
   dependencies:
-    "@c8y/client" "1019.19.7"
+    "@c8y/client" "1019.21.1"
     "@ngx-formly/core" "6.1.3"
     "@ngx-translate/core" "15.0.0"
     "@ngx-translate/http-loader" "8.0.0"
@@ -1529,29 +1529,31 @@
     three "0.154.0"
     tslib "^2.6.0"
 
-"@c8y/style@1019.19.7":
-  version "1019.19.7"
-  resolved "https://registry.yarnpkg.com/@c8y/style/-/style-1019.19.7.tgz#6c82c03572a5c8c5996e36108a64ff19965608d8"
-  integrity sha512-2697H/M/edLrrOaY/IL8ZdrBMm3oA2kZZRlLptLezWgr9F6C/3qZLiEGuYSseyw01WtIIYIcyztJNIhtVh4A/g==
+"@c8y/style@1019.21.1":
+  version "1019.21.1"
+  resolved "https://registry.yarnpkg.com/@c8y/style/-/style-1019.21.1.tgz#103af33a99df73abb37ab4c0114824c9f50fe185"
+  integrity sha512-j0aAZLf1vbP3DUckY1eeSe/C81Z+CdasKpCUeODc2b9VGsWGLStw3GR35Besf5lBpcKxdg465X8Tt0lmIgJK7w==
+  dependencies:
+    "@fontsource/roboto" "^5.0.12"
 
-"@c8y/websdk@1019.19.7":
-  version "1019.19.7"
-  resolved "https://registry.yarnpkg.com/@c8y/websdk/-/websdk-1019.19.7.tgz#823dab3310af0ddc300fffd630b0732317f746e0"
-  integrity sha512-+sEUBAic+5dH016uVlxgmwwIQvZ+wXrl+AF1sxF4w3CttRMLg3iCk20UGYaiA6KkQ3ngZ0TvPcD7p7u7JbyqIg==
+"@c8y/websdk@1019.21.1":
+  version "1019.21.1"
+  resolved "https://registry.yarnpkg.com/@c8y/websdk/-/websdk-1019.21.1.tgz#d40b05dfe750c5140370daca74851eac8ad8c880"
+  integrity sha512-1lIYiVPO/7I+lwi+CZsR0sGbR8RTIov34yMePWHiM0uYQZdqP6BAhM8fYfZVgaF6h4HGXtFad9FrSsrURS+LEA==
   dependencies:
     yargs "17.7.2"
 
-"@c8y/widget-plugin@1019.19.7":
-  version "1019.19.7"
-  resolved "https://registry.yarnpkg.com/@c8y/widget-plugin/-/widget-plugin-1019.19.7.tgz#7dfed918e8bf40715ce4f7cd9df6c17512bedd03"
-  integrity sha512-iByepJ6uAsh1cexgYa3MWFGhrdyolF9HxdJ82ikfRcfPN/maGbglWxs39mys+jhUa4gK4CI+FKCQz/Jc2wOnjw==
+"@c8y/widget-plugin@1019.21.1":
+  version "1019.21.1"
+  resolved "https://registry.yarnpkg.com/@c8y/widget-plugin/-/widget-plugin-1019.21.1.tgz#fe258b74e56c1308d5ff325f64e00fdb8109667d"
+  integrity sha512-jBfyMGbEV6JUSx01y5RrJr6cLO+Ol7W9e6DaryA259x1WtJk0p8xiyZPVPVcsfdkln4Jwq0jISzzex0WnUJnaw==
   dependencies:
     "@angular/cdk" "^16.2.11"
-    "@c8y/bootstrap" "1019.19.7"
-    "@c8y/client" "1019.19.7"
-    "@c8y/devkit" "1019.19.7"
-    "@c8y/ngx-components" "1019.19.7"
-    "@c8y/style" "1019.19.7"
+    "@c8y/bootstrap" "1019.21.1"
+    "@c8y/client" "1019.21.1"
+    "@c8y/devkit" "1019.21.1"
+    "@c8y/ngx-components" "1019.21.1"
+    "@c8y/style" "1019.21.1"
     ngx-bootstrap "11.0.2"
     rxjs "^7.4.0"
 
@@ -1810,6 +1812,11 @@
   version "0.19.12"
   resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.19.12.tgz#c57c8afbb4054a3ab8317591a0b7320360b444ae"
   integrity sha512-T1QyPSDCyMXaO3pzBkF96E8xMkiRYbUEZADd29SyPGabqxMViNoii+NcK7eWJAEoU6RZyEm5lVSIjTmcdoB9HA==
+
+"@fontsource/roboto@^5.0.12":
+  version "5.0.13"
+  resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-5.0.13.tgz#2d6ec431a2f9dfe38ca76525c2d6bf12241f575b"
+  integrity sha512-j61DHjsdUCKMXSdNLTOxcG701FWnF0jcqNNQi2iPCDxU8seN/sMxeh62dC++UiagCWq9ghTypX+Pcy7kX+QOeQ==
 
 "@gar/promisify@^1.1.3":
   version "1.1.3"
