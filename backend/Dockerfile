@@ -1,4 +1,4 @@
-FROM node:18-alpine As development
+FROM node:18.20.1-alpine As development
 
 WORKDIR /usr/src/app
 
@@ -9,7 +9,7 @@ RUN yarn install --frozen-lockfile --immutable --non-interactive --prefer-offlin
 
 USER node
 
-FROM node:18-alpine As build
+FROM node:18.20.1-alpine As build
 
 WORKDIR /usr/src/app
 
@@ -21,7 +21,7 @@ RUN yarn run build
 
 USER node
 
-FROM node:18-alpine As productionDeps
+FROM node:18.20.1-alpine As productionDeps
 
 WORKDIR /usr/src/app
 
@@ -35,7 +35,7 @@ RUN yarn install --frozen-lockfile --immutable --non-interactive --prefer-offlin
 
 USER node
 
-FROM node:18-alpine As production
+FROM node:18.20.1-alpine As production
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=productionDeps /usr/src/app/node_modules ./node_modules
