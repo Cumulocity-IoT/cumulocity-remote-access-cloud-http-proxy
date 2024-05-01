@@ -43,3 +43,7 @@ updates:
       - "dependencies"
     reviewers:
       - "reey"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
