@@ -5,6 +5,7 @@ import { ConnectionHandler } from "./connection-handler";
 import { IncomingHttpHeaders } from "http";
 import { WebSocket } from "ws";
 import { statistics } from "./statistics";
+import { createHash } from 'crypto';
 
 let counter = 0;
 export class RCAConnectionServer {
@@ -27,7 +28,8 @@ export class RCAConnectionServer {
     private id: string
   ) {
     counter++;
-    this.path = `sockets/${this.id}-${counter}.sock`;
+    const hashedId = createHash('sha256').update(this.id).digest('hex');
+    this.path = `sockets/${hashedId}-${counter}.sock`;
     this.logger = logger.child({
       tenantId: this.details.tenant,
       userId: this.details.user,
