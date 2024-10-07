@@ -25,7 +25,6 @@ export class CloudHttpProxyPathComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.device);
     this.allConfigs = this.device?.[RemoteAccessService.pathFragment] || {};
     if (!this.cloudProxyConfigId || !this.allConfigs) {
       this.configs = [];

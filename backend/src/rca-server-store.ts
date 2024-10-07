@@ -25,7 +25,8 @@ export class RCAServerStore {
       () => {
         this.logger.debug("Removing server from store.");
         this.store.delete(id);
-      }
+      },
+      id
     );
     if (details.isWebsocket) {
       return server;
@@ -38,14 +39,16 @@ export class RCAServerStore {
   static async newConnectionServer(
     logger: winston.Logger,
     connectionDetails: ConnectionDetails,
-    closedCallback: () => void
+    closedCallback: () => void,
+    id: string
   ) {
     const promise = new Promise<RCAConnectionServer>((resolve) => {
-      const newServer = new RCAConnectionServer(
+      new RCAConnectionServer(
         logger,
         connectionDetails,
-        () => resolve(newServer),
-        closedCallback
+        (server) => resolve(server),
+        closedCallback,
+        id
       );
     });
     const newServer = await promise;
@@ -53,6 +56,6 @@ export class RCAServerStore {
   }
 
   private getId(details: ConnectionDetails) {
-    return `${details.tenant}/${details.user}/${details.cloudProxyDeviceId}/${details.cloudProxyConfigId}/${details.isWebsocket}`;
+    return `${details.tenant}-${details.user}-${details.cloudProxyDeviceId}-${details.cloudProxyConfigId}-${!!details.isWebsocket}`;
   }
 }
