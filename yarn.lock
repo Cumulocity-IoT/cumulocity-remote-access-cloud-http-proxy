@@ -6268,6 +6268,13 @@ ngx-bootstrap@11.0.2:
   dependencies:
     tslib "^2.3.0"
 
+ngx-bootstrap@18.1.2:
+  version "18.1.2"
+  resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-18.1.2.tgz#d05060f4b2fee59a7a3683343246f7f49f9b9035"
+  integrity sha512-ohvguspdWET5iGqQCOLsW01C+La+nb+WfMAwBU+s4nquaSraEx/C/DgHwhJxrGE31VNYSTFpDgX83zvlW1Sctg==
+  dependencies:
+    tslib "^2.3.0"
+
 nice-napi@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/nice-napi/-/nice-napi-1.0.2.tgz"
