@@ -30,7 +30,7 @@ This functionality is heavily relying on the [Cloud Remote Access feature of Cum
 
 - The web server you are trying to access must be compatible with being served behind a reverse proxy with another path (which is in this case: `/service/cloud-http-proxy/<deviceId>/<remoteAccessConnectConfigId>/`). This might be something you can configure as part of your application, but not all applications support this.
 
-In case you are reaching the limits of this tool, you can also give [remote-access-local-proxy](https://github.com/SoftwareAG/cumulocity-remote-access-local-proxy) a try. This requires an application be to executed locally, but is not limited to just the HTTP protocol.
+In case you are reaching the limits of this tool, you can also give [remote-access-local-proxy](https://github.com/Cumulocity-IoT/cumulocity-remote-access-local-proxy) a try. This requires an application be to executed locally, but is not limited to just the HTTP protocol.
 
 ## Microservice
 

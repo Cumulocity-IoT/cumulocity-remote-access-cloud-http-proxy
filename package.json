@@ -11,18 +11,22 @@
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/issues"
+    "url": "https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/issues"
   },
-  "homepage": "https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy#readme",
+  "homepage": "https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy.git"
+    "url": "git+https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy.git"
   },
   "workspaces": [
     "backend",
     "frontend"
   ],
   "devDependencies": {
-    "autoprefixer": "^10.4.12"
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "autoprefixer": "^10.4.20",
+    "semantic-release": "^24.2.0"
   }
 }
