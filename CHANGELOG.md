@@ -1,3 +1,10 @@
+# [2.9.0](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.8.0...v2.9.0) (2024-11-25)
+
+
+### Features
+
+* bump dependencies ([#95](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/issues/95)) ([abef6fc](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/commit/abef6fcfe49e222c4debfa089d656f816b0d5176))
+
 # [2.8.0](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.7.0...v2.8.0) (2024-04-15)
 
 
