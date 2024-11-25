@@ -4,8 +4,8 @@
   "version": "2.8.0",
   "provider": {
     "name": "Tristan Bastian",
-    "domain": "https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy",
-    "support": "https://github.com/SoftwareAG/cumulocity-remote-access-cloud-http-proxy/issues"
+    "domain": "https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy",
+    "support": "https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/issues"
   },
   "isolation": "MULTI_TENANT",
   "roles": [],

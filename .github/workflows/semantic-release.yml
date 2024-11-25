@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: ${{ '18' }}
+  NODE_VERSION: ${{ '20' }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -32,9 +32,9 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install Dependencies
+      - name: Install Node.js dependencies
         run: |
-          npm i -g @semantic-release/changelog@^6.0.3 @semantic-release/exec@^6.0.3 @semantic-release/git@^10.0.1 semantic-release@^20.1.0
+          yarn install --frozen-lockfile --immutable --non-interactive --prefer-offline
 
       - name: Release
         env:
