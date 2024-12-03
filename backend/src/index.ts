@@ -162,7 +162,7 @@ app.use("/s/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
     if (req.headers.upgrade) {
       proxy.ws(req, req.socket, req.headers, undefined, (e) => {
         requestLogger.error("Error while proxying WS", { error: e });
-        proxy.ws(req, req.socket, req.headers);
+        res.sendStatus(500);
       });
       return;
     }
@@ -178,8 +178,7 @@ app.use("/s/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
       },
       (e) => {
         requestLogger.error("Error while proxying", { error: e });
-        // res.sendStatus(500);
-        proxy.web(req, res);
+        res.sendStatus(500);
       }
     );
   } catch (e) {
@@ -209,7 +208,7 @@ app.use("/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
     if (req.headers.upgrade) {
       proxy.ws(req, req.socket, req.headers, undefined, (e) => {
         requestLogger.error("Error while proxying WS", { error: e });
-        proxy.ws(req, req.socket, req.headers);
+        res.sendStatus(500);
       });
       return;
     }
@@ -225,8 +224,7 @@ app.use("/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
       },
       (e) => {
         requestLogger.error("Error while proxying", { error: e });
-        // res.sendStatus(500);
-        proxy.web(req, res);
+        res.sendStatus(500);
       }
     );
   } catch (e) {
