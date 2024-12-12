@@ -1,3 +1,10 @@
+## [2.9.2](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.9.1...v2.9.2) (2024-12-12)
+
+
+### Bug Fixes
+
+* http proxy tabs should not be gone when alarms tab is visited ([339ed9b](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/commit/339ed9bc1a8645a2b78632cb81bbf703356b9c51))
+
 ## [2.9.1](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.9.0...v2.9.1) (2024-12-03)
 
 
