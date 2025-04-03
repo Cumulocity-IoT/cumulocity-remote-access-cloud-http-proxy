@@ -11,6 +11,7 @@ import { RCAServerStore } from "./rca-server-store";
 import Agent from "agentkeepalive";
 import { HttpsAgent } from "agentkeepalive";
 import * as http from "http";
+import { BasicAuth, Client, ICredentials } from "@c8y/client";
 
 dotenv.config();
 
@@ -25,18 +26,90 @@ const serverStore = new RCAServerStore(logger);
 const agentOptions: Agent.HttpOptions = {
   timeout: 60_000, // active socket keepalive for 60 seconds
   freeSocketTimeout: 30_000, // free socket keepalive for 30 seconds
-}
+};
 const agents = {
   http: new Agent({
-    ...agentOptions
+    ...agentOptions,
   }),
   https: new HttpsAgent({
-    ...agentOptions
-  })
-}
+    ...agentOptions,
+  }),
+};
 
 logger.debug(JSON.stringify(process.env));
 const app = express();
+
+const tenantIdsWhereXSRFTokenValidationHasBeenDisabled = new Array<string>();
+async function disableXSRFTokenValidation() {
+  let subscriptions = new Array<ICredentials>();
+  try {
+    subscriptions = await Client.getMicroserviceSubscriptions(
+      {
+        tenant: process.env.C8Y_BOOTSTRAP_TENANT,
+        user: process.env.C8Y_BOOTSTRAP_USER,
+        password: process.env.C8Y_BOOTSTRAP_PASSWORD,
+      },
+      process.env.C8Y_BASEURL
+    );
+  } catch (e) {
+    logger.error("Failed to get subscriptions", { e });
+    return;
+  }
+
+  for (const subscription of subscriptions) {
+    const { tenant } = subscription;
+    try {
+      if (tenantIdsWhereXSRFTokenValidationHasBeenDisabled.includes(tenant)) {
+        logger.debug(
+          `XSRF token validation already disabled for tenant ${tenant}`
+        );
+        continue;
+      }
+
+      logger.debug(`Disabling XSRF token validation for tenant ${tenant}`);
+      const client = new Client(
+        new BasicAuth(subscription),
+        process.env.C8Y_BASEURL
+      );
+      const category = "jwt";
+      const key = "xsrf-validation.enabled";
+
+      const {
+        data: { value },
+      } = await client.options.tenant.detail({
+        category,
+        key,
+      });
+      if (value === "false" || <any>value === false) {
+        logger.info(`XSRF token validation already disabled for tenant ${tenant}`);
+        tenantIdsWhereXSRFTokenValidationHasBeenDisabled.push(tenant);
+        continue;
+      }
+      await client.options.tenant.update({
+        category: "jwt",
+        key: "xsrf-validation.enabled",
+        value: "false",
+      });
+
+      logger.info(`Disabled XSRF token validation for tenant ${tenant}`);
+      tenantIdsWhereXSRFTokenValidationHasBeenDisabled.push(tenant);
+    } catch (e) {
+      logger.warn(
+        `Failed to disable XSRF token validation for tenant ${tenant}`,
+        { e }
+      );
+    }
+  }
+}
+
+CronJob.from({
+  cronTime: "0 */5 * * * *",
+  onTick: async () => {
+    await disableXSRFTokenValidation();
+  },
+  start: true,
+  runOnInit: true,
+});
 
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -47,10 +120,13 @@ app.get("/health", (req, res) => {
 });
 
 app.use((req, res, next) => {
-  if (req.headers.authorization || req.headers.cookie?.includes('authorization')) {
+  if (
+    req.headers.authorization ||
+    req.headers.cookie?.includes("authorization")
+  ) {
     return next();
   }
-  res.setHeader('WWW-Authenticate', 'Basic realm="My Realm"')
+  res.setHeader("WWW-Authenticate", 'Basic realm="My Realm"');
   res.status(401).send();
 });
 
@@ -116,18 +192,28 @@ function getRewriteOptions(
     changeOrigin: !hasCustomHost,
     protocolRewrite: (req.headers["x-forwarded-proto"] as string) || "http",
     cookieDomainRewrite:
-        typeof forwardedHost === "string" ? `.${forwardedHost.replace(/:.*$/, '')}` : undefined,
-    cookiePathRewrite: `/service/cloud-http-proxy${secure ? '/s' : ''}/${req.params.cloudProxyDeviceId}/${req.params.cloudProxyConfigId}/`,
+      typeof forwardedHost === "string"
+        ? `.${forwardedHost.replace(/:.*$/, "")}`
+        : undefined,
+    cookiePathRewrite: `/service/cloud-http-proxy${secure ? "/s" : ""}/${
+      req.params.cloudProxyDeviceId
+    }/${req.params.cloudProxyConfigId}/`,
   };
 }
 
-function hasCustomHostHeader(req: express.Request, deviceId: string, configId: string) {
+function hasCustomHostHeader(
+  req: express.Request,
+  deviceId: string,
+  configId: string
+) {
   const headerToLookoutFor = `rca-http-header-host-${deviceId}-${configId}`;
   return !!req.headers[headerToLookoutFor];
 }
 
-function prefixCookiesToBeSet(proxy: Server<http.IncomingMessage, http.ServerResponse<http.IncomingMessage>>) {
-  proxy.on('proxyRes', (response) => {
+function prefixCookiesToBeSet(
+  proxy: Server<http.IncomingMessage, http.ServerResponse<http.IncomingMessage>>
+) {
+  proxy.on("proxyRes", (response) => {
     const cookiesToSet = response.headers["set-cookie"];
     if (!cookiesToSet?.length) {
       return;
@@ -149,7 +235,11 @@ app.use("/s/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
   });
 
   try {
-    const hasCustomHost = hasCustomHostHeader(req, req.params.cloudProxyDeviceId, req.params.cloudProxyConfigId);
+    const hasCustomHost = hasCustomHostHeader(
+      req,
+      req.params.cloudProxyDeviceId,
+      req.params.cloudProxyConfigId
+    );
     const target = await getTarget(req, requestLogger, true);
     const rewriteOptions = getRewriteOptions(req, true, hasCustomHost);
     const proxy = createProxyServer({
@@ -196,7 +286,11 @@ app.use("/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
   });
 
   try {
-    const hasCustomHost = hasCustomHostHeader(req, req.params.cloudProxyDeviceId, req.params.cloudProxyConfigId);
+    const hasCustomHost = hasCustomHostHeader(
+      req,
+      req.params.cloudProxyDeviceId,
+      req.params.cloudProxyConfigId
+    );
     const target = await getTarget(req, requestLogger);
     const rewriteOptions = getRewriteOptions(req, true, hasCustomHost);
     const proxy = createProxyServer({
@@ -254,4 +348,3 @@ if (!process.env.NO_STATISTICS) {
     start: true,
   });
 }
-

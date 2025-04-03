@@ -9,7 +9,10 @@
   },
   "isolation": "MULTI_TENANT",
   "roles": [],
-  "requiredRoles": [],
+  "requiredRoles": [
+    "ROLE_OPTION_MANAGEMENT_READ",
+    "ROLE_OPTION_MANAGEMENT_ADMIN"
+  ],
   "livenessProbe": {
     "httpGet": {
       "path": "/health",
