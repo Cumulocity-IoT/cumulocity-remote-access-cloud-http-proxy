@@ -23,7 +23,7 @@
     "typescript": "~5.5.2"
   },
   "dependencies": {
-    "@c8y/client": "1021.3.1",
+    "@c8y/client": "1021.54.6",
     "agentkeepalive": "^4.5.0",
     "cookie-parse": "^0.4.0",
     "cron": "^3.2.1",
