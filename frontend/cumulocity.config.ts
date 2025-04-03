@@ -39,7 +39,6 @@ export default {
       '@angular/platform-browser',
       '@angular/platform-browser-dynamic',
       '@angular/router',
-      '@angular/upgrade',
       '@c8y/client',
       '@c8y/ngx-components',
       'ngx-bootstrap',
