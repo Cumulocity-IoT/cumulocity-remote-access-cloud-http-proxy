@@ -1,3 +1,10 @@
+# [2.10.0](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.9.2...v2.10.0) (2025-04-03)
+
+
+### Features
+
+* add cron job to disable xsrf token validation on subscribed tenants automatically ([#107](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/issues/107)) ([a197626](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/commit/a1976262a9ffbf3ff395cab0f6ecf9b277a75e37))
+
 ## [2.9.2](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.9.1...v2.9.2) (2024-12-12)
 
 
