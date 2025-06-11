@@ -74,17 +74,22 @@ async function disableXSRFTokenValidation() {
       const category = "jwt";
       const key = "xsrf-validation.enabled";
 
-      const {
+      try {
+        const {
         data: { value },
-      } = await client.options.tenant.detail({
-        category,
-        key,
-      });
-      if (value === "false" || <any>value === false) {
-        logger.info(`XSRF token validation already disabled for tenant ${tenant}`);
-        tenantIdsWhereXSRFTokenValidationHasBeenDisabled.push(tenant);
-        continue;
+        } = await client.options.tenant.detail({
+          category,
+          key,
+        });
+        if (value === "false" || <any>value === false) {
+          logger.info(`XSRF token validation already disabled for tenant ${tenant}`);
+          tenantIdsWhereXSRFTokenValidationHasBeenDisabled.push(tenant);
+          continue;
+        }
+      } catch (e) {
+        // assume that the option does not exist yet
       }
+      
       await client.options.tenant.update({
         category: "jwt",
         key: "xsrf-validation.enabled",
