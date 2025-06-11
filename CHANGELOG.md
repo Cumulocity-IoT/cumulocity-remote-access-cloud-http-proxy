@@ -1,3 +1,10 @@
+## [2.10.1](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.10.0...v2.10.1) (2025-06-11)
+
+
+### Bug Fixes
+
+* disable xsrf token validation on startup as expected ([fc553bb](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/commit/fc553bb3d4309bcff47e53eb9214aea3166c5e49))
+
 # [2.10.0](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.9.2...v2.10.0) (2025-04-03)
 
 
