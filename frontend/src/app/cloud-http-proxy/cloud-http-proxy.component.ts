@@ -24,6 +24,7 @@ import { ProxyTrackingService } from './proxy-tracking.service';
 import { CloudHttpProxyPathComponent } from './cloud-http-proxy-path/cloud-http-proxy-path.component';
 import { CloudHTTPProxyPathConfigs, RemoteAccessService } from './cloud-http-proxy-path/remote-access.service';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { FetchClient } from '@c8y/client';
 
 @Component({
   selector: 'remote-access-cloud-http-proxy',
@@ -50,7 +51,8 @@ export class CloudHttpProxyComponent implements OnDestroy {
     private activatedRoute: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private modal: BsModalService,
-    private tracking: ProxyTrackingService
+    private tracking: ProxyTrackingService,
+    private client: FetchClient
   ) {
     this.details$ = combineLatest([
       this.activatedRoute.params,
@@ -104,7 +106,23 @@ export class CloudHttpProxyComponent implements OnDestroy {
         }/${cloudProxyDeviceId}/${cloudProxyConfigId}${path}` as const;
       }),
       distinctUntilChanged(),
-      tap(() => {
+      tap((iframeURL) => {
+        const options = this.client.getFetchOptions();
+        if (options && options.headers) {
+          const headers: { [key: string]: string } = options.headers;
+          const authString = headers['Authorization'] || headers['authorization'];
+          if (authString && authString.startsWith('Basic ')) {
+            const base64 = authString.replace('Basic ', '');
+            const decoded = atob(base64);
+            const userSeparatorIndex = decoded.indexOf(':');
+            const user = decoded.substring(0, userSeparatorIndex);
+            const password = decoded.substring(userSeparatorIndex + 1);
+            // pre-authenticate iframe in case of basic auth
+            const req = new XMLHttpRequest();
+            req.open('GET', iframeURL, false, user, password);
+            req.send();
+          }
+        }
         this.showLoader = true;
       }),
       shareReplay({ refCount: true, bufferSize: 1 })
