@@ -10,12 +10,9 @@ import * as cookieLib from "cookie-parse";
 import winston from "winston";
 import { IncomingHttpHeaders } from "http";
 
-const domainCache = new Map<string, string>();
-
 export class ConnectionDetails {
   client: Client;
   tenant: string;
-  domain: string;
   cloudProxyConfigId: string;
   cloudProxyDeviceId: string;
   rcaConfig: RCAConfig | undefined;
@@ -66,16 +63,12 @@ export class ConnectionDetails {
     this.originalHeaders = Object.assign({}, this.req.headers);
 
     try {
-      const { userId, tenantId, domain } = this.getUserAndTenantFromRequest(
-        this.req
-      );
+      const { userId, tenantId } = this.getUserAndTenantFromRequest(this.req);
       this.user = userId;
       this.tenant = tenantId;
-      this.domain = domain;
       this.logger.debug(`Extracted user and tenant from request`, {
         user: this.user,
         tenant: this.tenant,
-        domain: this.domain,
       });
     } catch (e) {
       this.logger.error(`Failed to extract user and tenant out of request.`, {
@@ -84,10 +77,7 @@ export class ConnectionDetails {
       throw e;
     }
 
-    this.client = await this.getTenantDetailsClient(
-      this.req.headers,
-      this.domain
-    );
+    this.client = await this.getTenantDetailsClient(this.req.headers);
 
     this.logger.debug(`Created tenant details client`);
 
@@ -111,16 +101,12 @@ export class ConnectionDetails {
       cookie,
       "x-forwarded-host": forwardedHost,
     } = req.headers;
-    const host = Array.isArray(forwardedHost)
-      ? forwardedHost[0]
-      : forwardedHost;
-    let domain = host?.replace(/:.*$/, "") || "";
     if (basicAuthPrefix.test(authorization || "")) {
       const basicAuthToken = authorization.replace(basicAuthPrefix, "");
       const decodedToken = Buffer.from(basicAuthToken, "base64").toString();
       const tenantId = decodedToken.replace(/\/.*$/, "");
       const userId = decodedToken.replace(/:.*$/, "").replace(/^.*\//, "");
-      const extractDetails = { tenantId, userId, domain };
+      const extractDetails = { tenantId, userId };
       this.logger.debug(`Extracted Details (basic)`, { extractDetails });
       return extractDetails;
     }
@@ -144,8 +130,6 @@ export class ConnectionDetails {
 
     try {
       const {
-        iss,
-        aud,
         sub,
         ten: tenantId,
       } = JSON.parse(
@@ -153,8 +137,7 @@ export class ConnectionDetails {
       );
       const extractDetails = {
         tenantId,
-        userId: sub,
-        domain: iss || aud || domain,
+        userId: sub
       };
 
       this.logger.debug(`Extracted Details (bearer)`, { extractDetails });
@@ -168,46 +151,10 @@ export class ConnectionDetails {
     }
   }
 
-  private async getTenantDetailsClient(
-    headers: http.IncomingHttpHeaders,
-    domain?: string
-  ) {
-    if (!domain) {
-      const initialClient = new Client(
-        new MicroserviceClientRequestAuth(headers),
-        process.env.C8Y_BASEURL
-      );
-
-      const domainFromCache = domainCache.get(this.tenant);
-      if (domainFromCache) {
-        domain = domainFromCache;
-      } else {
-        try {
-          const { data: currentTenant } = await initialClient.tenant.current();
-
-          domain = currentTenant.domainName;
-          this.logger.debug(`Retrieved domain name of current tenant`, {
-            domain,
-          });
-          domainCache.set(this.tenant, domain);
-        } catch (e) {
-          this.logger.error(`Failed to retrieve current tenant.`, {
-            errorObj: e,
-          });
-          throw e;
-        }
-      }
-    }
-
-    if (!domain) {
-      throw Error(`Failed to retrieve domain name for tenant ${this.tenant}`);
-    }
-
-    this.domain = domain;
-
+  private async getTenantDetailsClient(headers: http.IncomingHttpHeaders) {
     const client = new Client(
       new MicroserviceClientRequestAuth(headers),
-      `https://${domain}`
+      process.env.C8Y_BASEURL
     );
     client.core.tenant = this.tenant;
     return client;

@@ -69,8 +69,11 @@ export class RCAConnectionServer {
       webSocketHeaders.authorization = authorization;
     }
 
-    const { domain, cloudProxyDeviceId, cloudProxyConfigId } = this.details;
-    const url = `wss://${domain}/service/remoteaccess/client/${cloudProxyDeviceId}/configurations/${cloudProxyConfigId}${this.details.queryParamsString}`;
+    const { cloudProxyDeviceId, cloudProxyConfigId } = this.details;
+    const baseUrl = new URL(process.env.C8Y_BASEURL);
+    const wsProtocol = baseUrl.protocol === 'https:' ? "wss" : "ws";
+    const host = baseUrl.host;
+    const url = `${wsProtocol}://${host}/service/remoteaccess/client/${cloudProxyDeviceId}/configurations/${cloudProxyConfigId}${this.details.queryParamsString}`;
     const socket = new WebSocket(url, ["binary"], {
       headers: webSocketHeaders,
     });
