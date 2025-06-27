@@ -1,3 +1,15 @@
+# [2.11.0](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.10.1...v2.11.0) (2025-06-27)
+
+
+### Bug Fixes
+
+* use internal BASE_URL instead of actual tenant domain to establish websocket connection ([#126](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/issues/126)) ([7ab7438](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/commit/7ab743865327f307a97d9c14cbd7abb8a941fdee))
+
+
+### Features
+
+* add support for basic auth ([#127](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/issues/127)) ([241bcdc](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/commit/241bcdc36bb53fd570b4c4c50f78abd6dc1ad04d))
+
 ## [2.10.1](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.10.0...v2.10.1) (2025-06-11)
 
 
