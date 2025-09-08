@@ -3391,9 +3391,10 @@ ajv@^6.12.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-"angular-gettext-tools@git+https://github.com/rubenv/angular-gettext-tools.git#5a20d5fe2ad768bfd0cac18259b4986346061eda":
+"angular-gettext-tools@https://github.com/rubenv/angular-gettext-tools.git#5a20d5fe2ad768bfd0cac18259b4986346061eda":
   version "2.5.3"
-  resolved "git+https://github.com/rubenv/angular-gettext-tools.git#5a20d5fe2ad768bfd0cac18259b4986346061eda"
+  uid "5a20d5fe2ad768bfd0cac18259b4986346061eda"
+  resolved "https://github.com/rubenv/angular-gettext-tools.git#5a20d5fe2ad768bfd0cac18259b4986346061eda"
   dependencies:
     "@babel/parser" "^7.4.3"
     binary-search "^1.2.0"
@@ -6452,10 +6453,10 @@ jasmine-core@^4.1.0:
   resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-4.6.1.tgz#5ebb8afa07282078f8d7b15871737a83b74e58f2"
   integrity sha512-VYz/BjjmC3klLJlLwA4Kw8ytk0zDSmbbDLNs794VnWmkcCB7I9aAL/D48VNQtmITyPvea2C3jdUMfc3kAoy0PQ==
 
-jasmine-core@~5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-5.2.0.tgz#7d0aa4c26cb3dbaed201d0505489baf1e48faeca"
-  integrity sha512-tSAtdrvWybZkQmmaIoDgnvHG8ORUNw5kEVlO5CvrXj02Jjr9TZrmjFq7FUiOUzJiOP2wLGYT6PgrQgQF4R1xiw==
+jasmine-core@~5.10.0:
+  version "5.10.0"
+  resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-5.10.0.tgz#7e6c3efde6eb1ec9afc58d4373f6ace1e91c459e"
+  integrity sha512-MrChbWV5LBo+EaeKwTM1eZ6oYSz1brvFExnRafraEkJkbJ9evbUxABhnIgGQimhpMxhg+BD6QmOvb/e3NXsNdg==
 
 java-properties@^1.0.2:
   version "1.0.2"
