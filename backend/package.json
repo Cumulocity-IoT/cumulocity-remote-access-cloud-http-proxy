@@ -20,7 +20,7 @@
     "@types/ws": "^8.5.13",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
-    "typescript": "~5.5.2"
+    "typescript": "~5.9.3"
   },
   "dependencies": {
     "@c8y/client": "1021.54.6",
