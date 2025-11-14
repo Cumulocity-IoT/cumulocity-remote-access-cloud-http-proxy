@@ -24,7 +24,8 @@ const logger = createLogger({
 
 const serverStore = new RCAServerStore(logger);
 const agentOptions: Agent.HttpOptions = {
-  timeout: 60_000, // active socket keepalive for 60 seconds
+  // For devices with slower/unreliable network connections (e.g. 3G) we wait up to 3 minutes for a response.
+  timeout: 180_000, // active socket keepalive for 180 seconds
   freeSocketTimeout: 30_000, // free socket keepalive for 30 seconds
 };
 const agents = {
