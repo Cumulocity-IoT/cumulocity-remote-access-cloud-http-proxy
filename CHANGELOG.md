@@ -1,3 +1,10 @@
+## [2.11.1](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.11.0...v2.11.1) (2025-11-14)
+
+
+### Bug Fixes
+
+* **microservice:** increased timeout to 3 minutes for slower/unreliable network connections ([#152](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/issues/152)) ([bbd58b2](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/commit/bbd58b23a665292a60684fa32bfe8af7f6a1de29))
+
 # [2.11.0](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.10.1...v2.11.0) (2025-06-27)
 
 

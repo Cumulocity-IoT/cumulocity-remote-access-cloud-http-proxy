@@ -1,7 +1,7 @@
 {
   "apiVersion": "2",
   "name": "cloud-http-proxy",
-  "version": "2.11.0",
+  "version": "2.11.1",
   "provider": {
     "name": "Tristan Bastian",
     "domain": "https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy",
