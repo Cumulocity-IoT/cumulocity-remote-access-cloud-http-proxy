@@ -45,7 +45,7 @@
 <iframe
   [ngClass]="{ hidden: showLoader }"
   [src]="safePathToProxyMS$ | async"
-  (load)="iframeLoaded($event)"
+  (load)="iframeLoaded(iframe, $event)"
   class="split-scroll"
   #iframe
 >

@@ -136,8 +136,14 @@ export class CloudHttpProxyComponent implements OnDestroy {
     this.destroy.next();
   }
 
-  iframeLoaded(event: any) {
+  iframeLoaded(iframe: HTMLIFrameElement, event: Event) {
     this.showLoader = false;
+    const title = iframe.contentDocument?.title;
+    if (title) {
+      this.tracking.triggerGainSightEvent('iframe-title', {
+        title
+      });
+    }
   }
 
   async openSettingsModal() {
