@@ -1,3 +1,10 @@
+## [2.11.2](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.11.1...v2.11.2) (2025-12-19)
+
+
+### Bug Fixes
+
+* **frontend:** track title of viewed pages ([#160](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/issues/160)) ([d0f4c88](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/commit/d0f4c88bf91af0b4e8fb52fd894f87573dbca317))
+
 ## [2.11.1](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.11.0...v2.11.1) (2025-11-14)
 
 
