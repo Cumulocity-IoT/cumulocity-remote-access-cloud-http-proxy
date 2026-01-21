@@ -84,3 +84,9 @@ In case you want to set some other header as well, you can do so by setting a te
 - ~~**Connection Pools:** As of now a remote access connect session is used per request. This does mean that per HTTP request sent, an operation for the device is created to establish the remote access connect session. This adds a certain delay to every request and creates a bunch of operations in Cumulocity. This could be improved by having a connection pool per device, to reuse remote access connect sessions.~~ **`implemented`**
 
 - ~~**Authorization:** Currently any sort of authorization to the target HTTP server is not supported since the `Authorization` headers would be interpreted by Cumulocity and the access would be probably denied (as the user you are using against the device is probably not existing inside of Cumulocity). In theory an authorization header could be added to the requests as part of the http proxy that is running inside of the microservice.~~ **`implemented`**
+
+------------------------------
+
+These tools are provided as-is and without warranty or support. They do not constitute part of the Cumulocity product suite. Users are free to use, fork and modify them, subject to the license agreement. While Cumulocity welcomes contributions, we cannot guarantee to include every contribution in the master project.
+_____________________
+For more information you can Ask a Question in the [community Forums](https://community.cumulocity.com/).
