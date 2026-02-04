@@ -15,24 +15,24 @@
   "author": "Tristan Bastian",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@types/express": "^5.0.0",
-    "@types/http-proxy": "^1.17.15",
-    "@types/ws": "^8.5.13",
+    "@types/express": "^5.0.6",
+    "@types/http-proxy": "^1.17.17",
+    "@types/ws": "^8.18.1",
     "ts-node": "^10.9.2",
-    "tsx": "^4.19.2",
-    "typescript": "~5.5.2"
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.2"
   },
   "dependencies": {
-    "@c8y/client": "1021.54.6",
-    "agentkeepalive": "^4.5.0",
+    "@c8y/client": "1023.25.6",
+    "agentkeepalive": "^4.6.0",
     "cookie-parse": "^0.4.0",
-    "cron": "^3.2.1",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
+    "cron": "^4.4.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
     "http-proxy": "^1.18.1",
     "tslib": "^2.8.1",
-    "uuid": "^11.0.3",
-    "winston": "^3.17.0",
-    "ws": "^8.18.0"
+    "uuid": "^13.0.0",
+    "winston": "^3.19.0",
+    "ws": "^8.19.0"
   }
 }

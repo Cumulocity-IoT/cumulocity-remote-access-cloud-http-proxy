@@ -37,7 +37,6 @@ export default {
       '@angular/core',
       '@angular/forms',
       '@angular/platform-browser',
-      '@angular/platform-browser-dynamic',
       '@angular/router',
       '@c8y/client',
       '@c8y/ngx-components',
