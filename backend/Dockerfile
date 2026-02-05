@@ -1,5 +1,5 @@
 
-FROM alpine:3.23.0 AS nodejs
+FROM alpine:3.23.3 AS nodejs
 
 # Install nodejs
 RUN addgroup -g 1000 node \
