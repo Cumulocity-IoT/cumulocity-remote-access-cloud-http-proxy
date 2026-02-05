@@ -1,3 +1,10 @@
+# [2.12.0](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.11.2...v2.12.0) (2026-02-05)
+
+
+### Features
+
+* upgrade to version 1023 of web sdk ([#168](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/issues/168)) ([11f5a78](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/commit/11f5a7805dee30c1c8ff8d210c7c439d734180fa))
+
 ## [2.11.2](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.11.1...v2.11.2) (2025-12-19)
 
 
