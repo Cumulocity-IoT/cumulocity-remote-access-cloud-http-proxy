@@ -10,7 +10,7 @@ on:
 name: Main CI
 
 env:
-  NODE_VERSION: "20"
+  NODE_VERSION: "24"
 
 jobs:
   build:
@@ -53,7 +53,7 @@ jobs:
           name: cloud-http-proxy-ui-${{ env.C8Y_VERSION }}-${{ github.sha }}
           if-no-files-found: error
           retention-days: 5
-          path: frontend/dist/
+          path: frontend/dist/cloud-http-proxy-ui/
 
       - name: 🚧  Build Backend
         run: |
