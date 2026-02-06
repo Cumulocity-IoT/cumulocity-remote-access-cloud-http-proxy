@@ -29,6 +29,7 @@ export default {
     license,
   },
   buildTime: {
+    skipMonacoLanguageSupport: true,
     federation: [
       '@angular/animations',
       '@angular/cdk',
