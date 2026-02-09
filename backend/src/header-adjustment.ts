@@ -32,12 +32,15 @@ export class HeaderAdjustment {
       keysToAdd[newKey] = value;
     }
     if (headers.cookie) {
-      const {'XSRF-TOKEN': xsrf} = cookieLib.parse(headers.cookie || "");
+      const { "XSRF-TOKEN": xsrf } = cookieLib.parse(headers.cookie || "");
       if (xsrf) {
-        keysToAdd['x-xsrf-token'] = xsrf;
+        keysToAdd["x-xsrf-token"] = xsrf;
       }
     }
     Object.assign(headers, keysToAdd);
+    const host = headers.host || headers.Host;
+    delete headers.host;
+    headers.Host = host;
   }
 
   private static adjustAuthorization(headers: IncomingHttpHeaders) {
