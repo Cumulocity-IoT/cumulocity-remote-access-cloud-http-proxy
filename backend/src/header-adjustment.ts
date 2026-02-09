@@ -6,6 +6,7 @@ import * as cookieLib from "cookie-parse";
 export class HeaderAdjustment {
   private static headersToRemove = [];
   private static headerPrefix = "rca-http-header-";
+  private static headersToAdjustCasingFor = ['Connection', 'Accept', 'Host', 'Content-Length', 'Content-Type', 'Cache-Control', 'Cookie', 'Accept-Encoding', 'Accept-Language'];
   static adjust(headers: IncomingHttpHeaders, details: ConnectionDetails) {
     this.adjustAuthorization(headers);
     const keysToAdd: IncomingHttpHeaders = {};
@@ -38,9 +39,14 @@ export class HeaderAdjustment {
       }
     }
     Object.assign(headers, keysToAdd);
-    const host = headers.host || headers.Host;
-    delete headers.host;
-    headers.Host = host;
+
+    for (const headerToAdjust of this.headersToAdjustCasingFor) {
+      const lowerCaseHeader = headerToAdjust.toLowerCase();
+      if (headers[lowerCaseHeader]) {
+        headers[headerToAdjust] = headers[lowerCaseHeader];
+        delete headers[lowerCaseHeader];
+      }
+    }
   }
 
   private static adjustAuthorization(headers: IncomingHttpHeaders) {
