@@ -8466,6 +8466,13 @@ ngx-bootstrap@20.0.2:
   dependencies:
     tslib "^2.3.0"
 
+ngx-bootstrap@21.0.1:
+  version "21.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-21.0.1.tgz#d876ca625f3671332f4dcf110788a59cf7db45d1"
+  integrity sha512-PhIkcNT97NfM456UEFvTWOhTM+/NSKvUMx+hLhOYM0B4e0RXzb6mUbg1f90jdE3kiNEJGFHlwOhfHa46SxbTdA==
+  dependencies:
+    tslib "^2.3.0"
+
 ngx-echarts@20.0.2:
   version "20.0.2"
   resolved "https://registry.yarnpkg.com/ngx-echarts/-/ngx-echarts-20.0.2.tgz#028affcbed1f81d7aeaa7f0a5c9c75831d1e1507"
