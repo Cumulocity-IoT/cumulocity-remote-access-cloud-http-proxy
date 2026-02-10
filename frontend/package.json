@@ -46,7 +46,7 @@
     "@angular/compiler-cli": "^20.3.0",
     "@c8y/devkit": "1023.14.68",
     "@c8y/options": "1023.14.68",
-    "@types/jasmine": "~4.3.0",
+    "@types/jasmine": "~6.0.0",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
