@@ -1,3 +1,5 @@
+## [2.12.1](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.12.0...v2.12.1) (2026-03-19)
+
 # [2.12.0](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.11.2...v2.12.0) (2026-02-05)
 
 
