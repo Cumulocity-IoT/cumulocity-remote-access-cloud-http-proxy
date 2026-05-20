@@ -4065,9 +4065,10 @@ algoliasearch@5.35.0:
     "@algolia/requester-fetch" "5.35.0"
     "@algolia/requester-node-http" "5.35.0"
 
-"angular-gettext-tools@git+https://github.com/rubenv/angular-gettext-tools.git#5a20d5fe2ad768bfd0cac18259b4986346061eda":
+"angular-gettext-tools@https://github.com/rubenv/angular-gettext-tools.git#5a20d5fe2ad768bfd0cac18259b4986346061eda":
   version "2.5.3"
-  resolved "git+https://github.com/rubenv/angular-gettext-tools.git#5a20d5fe2ad768bfd0cac18259b4986346061eda"
+  uid "5a20d5fe2ad768bfd0cac18259b4986346061eda"
+  resolved "https://github.com/rubenv/angular-gettext-tools.git#5a20d5fe2ad768bfd0cac18259b4986346061eda"
   dependencies:
     "@babel/parser" "^7.4.3"
     binary-search "^1.2.0"
