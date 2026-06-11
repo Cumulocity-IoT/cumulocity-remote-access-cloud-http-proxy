@@ -1,59 +1,36 @@
+# syntax=docker/dockerfile:1
 
-FROM alpine:3.23.4 AS nodejs
+# ---- Build stage: compile a static musl binary ----
+FROM rust:1-alpine AS build
 
-# Install nodejs
+# Build dependencies for crates with native code (ring needs a C compiler + perl). The
+# rust:alpine image already targets the musl libc.
+RUN apk add --no-cache build-base perl
+
+WORKDIR /usr/src/app
+
+# Cache dependency compilation: build against a stub main, then drop it in for the real sources.
+COPY backend/Cargo.toml ./
+COPY backend/Cargo.lock* ./
+RUN mkdir src \
+    && echo "fn main() {}" > src/main.rs \
+    && cargo build --release \
+    && rm -rf src
+
+COPY backend/src ./src
+# Ensure the real sources are seen as newer than the stub build.
+RUN touch src/main.rs && cargo build --release
+
+# ---- Runtime stage ----
+FROM alpine:3.23.4 AS production
+
 RUN addgroup -g 1000 node \
-    && adduser -u 1000 -G node -s /bin/sh -D node \
-    && apk add --no-cache nodejs
+    && adduser -u 1000 -G node -s /bin/sh -D node
 
-FROM nodejs AS nodejs-and-npm
-
-# Install npm & yarn
-RUN apk add --no-cache npm yarn
-
-FROM nodejs-and-npm AS development
-
-WORKDIR /usr/src/app
-
-COPY --chown=node:node backend/package.json ./
-COPY --chown=node:node yarn.lock ./
-
-RUN yarn install --frozen-lockfile --immutable --non-interactive --prefer-offline
+COPY --from=build /usr/src/app/target/release/cloud-http-proxy /usr/local/bin/cloud-http-proxy
 
 USER node
-
-FROM nodejs-and-npm AS build
-
-WORKDIR /usr/src/app
-
-COPY --chown=node:node --from=development /usr/src/app/ .
-
-COPY --chown=node:node backend .
-
-RUN yarn run build
-
-USER node
-
-FROM nodejs-and-npm AS production-deps
-
-WORKDIR /usr/src/app
-
-ENV NODE_ENV=production
-ENV NO_COLOR=true
-
-COPY --chown=node:node backend/package.json ./
-COPY --chown=node:node yarn.lock ./
-
-RUN yarn install --frozen-lockfile --immutable --non-interactive --prefer-offline --production && yarn cache clean --force
-
-USER node
-
-FROM nodejs AS production
-
-# Copy the bundled code from the build stage to the production image
-COPY --chown=node:node --from=production-deps /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node --from=build /usr/src/app/dist ./dist
-
-CMD [ "node", "dist/src/index.js" ]
 
 EXPOSE 80
+
+CMD [ "/usr/local/bin/cloud-http-proxy" ]

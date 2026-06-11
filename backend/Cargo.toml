@@ -1,0 +1,51 @@
+[package]
+name = "cloud-http-proxy"
+version = "2.12.1"
+description = "Cumulocity microservice that proxies HTTP/WebSocket traffic through the Cloud Remote Access PASSTHROUGH tunnel to a device."
+authors = ["Tristan Bastian"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "cloud-http-proxy"
+path = "src/main.rs"
+
+[dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "net", "io-util", "time", "macros", "sync", "signal"] }
+hyper = { version = "1", features = ["server", "client", "http1"] }
+hyper-util = { version = "0.1", features = ["tokio"] }
+http-body-util = "0.1"
+bytes = "1"
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
+
+# CRA tunnel websocket (wss to Cumulocity). webpki-roots avoids needing ca-certificates in the runtime image.
+tokio-tungstenite = { version = "0.27", default-features = false, features = ["connect", "rustls-tls-webpki-roots"] }
+
+# TLS to the device for the /s route. No certificate validation (parity with http-proxy `secure:false`).
+# All rustls users (here, tokio-tungstenite, reqwest) use the `ring` provider so the heavyweight
+# aws-lc-sys C/C++ build is never compiled (keeps the build light enough for constrained CI).
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12", "logging"] }
+
+# Cumulocity REST API client (replaces @c8y/client).
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls-webpki-roots-no-provider", "json"] }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+uuid = { version = "1", features = ["v4"] }
+url = "2"
+cookie = "0.18"
+
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+dotenvy = "0.15"
+anyhow = "1"
+thiserror = "2"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+strip = true

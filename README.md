@@ -26,7 +26,7 @@ In case you are reaching the limits of this tool, you can also give [remote-acce
 
 ## Microservice
 
-The microservice is written in nodeJS.
+The microservice is written in Rust (using `tokio` + `hyper`).
 
 It's functionality can be described in the following steps:
 
