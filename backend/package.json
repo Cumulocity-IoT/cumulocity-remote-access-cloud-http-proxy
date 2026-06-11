@@ -1,38 +1,11 @@
 {
   "name": "cloud-http-proxy",
   "version": "2.12.1",
-  "description": "",
-  "main": "src/index.js",
+  "description": "Cumulocity microservice that proxies HTTP requests through the Cloud Remote Access PASSTHROUGH tunnel to a device. Implemented in Rust; this file remains only to keep the yarn workspace and semantic-release versioning intact.",
   "private": "true",
-  "scripts": {
-    "build": "tsc",
-    "build:release": "docker build -t cloud-http-proxy -f ./Dockerfile .. && docker save cloud-http-proxy -o image.tar && zip ../cloud-http-proxy cumulocity.json image.tar",
-    "dev": "tsx watch src/index.ts",
-    "start": "ts-node src/index.ts",
-    "start:docker": "docker run -it -p 3000:3000 --name http-proxy --env-file .env cloud-http-proxy",
-    "docker:clean": "docker kill http-proxy || docker rm http-proxy"
-  },
   "author": "Tristan Bastian",
   "license": "Apache-2.0",
-  "devDependencies": {
-    "@types/express": "^5.0.6",
-    "@types/http-proxy": "^1.17.17",
-    "@types/ws": "^8.18.1",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.21.0",
-    "typescript": "~5.9.2"
-  },
-  "dependencies": {
-    "@c8y/client": "^1023.58.3",
-    "agentkeepalive": "^4.6.0",
-    "cookie-parse": "^0.4.0",
-    "cron": "^4.4.0",
-    "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-    "http-proxy": "^1.18.1",
-    "tslib": "^2.8.1",
-    "uuid": "^14.0.0",
-    "winston": "^3.19.0",
-    "ws": "^8.19.0"
+  "scripts": {
+    "build:release": "bash build-release.sh"
   }
 }

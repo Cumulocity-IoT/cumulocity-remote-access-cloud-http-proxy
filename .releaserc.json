@@ -44,7 +44,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "cat backend/cumulocity.json | jq --arg version \"${nextRelease.version}\" '.version = $version' > backend/.tmp && mv backend/.tmp backend/cumulocity.json"
+        "prepareCmd": "cat backend/cumulocity.json | jq --arg version \"${nextRelease.version}\" '.version = $version' > backend/.tmp && mv backend/.tmp backend/cumulocity.json && sed -i -E \"0,/^version = \\\".*\\\"$/s//version = \\\"${nextRelease.version}\\\"/\" backend/Cargo.toml"
       }
     ],
     [
@@ -54,7 +54,8 @@
           "CHANGELOG.md",
           "package.json",
           "*/package.json",
-          "*/cumulocity.json"
+          "*/cumulocity.json",
+          "backend/Cargo.toml"
         ],
         "message": "ci(release): ${nextRelease.version}\n\n${nextRelease.notes}"
       }
