@@ -34,7 +34,7 @@
     "@c8y/client": "^1023.58.3",
     "@c8y/ngx-components": "^1023.58.3",
     "@c8y/style": "^1023.58.3",
-    "monaco-editor": "~0.53.0",
+    "monaco-editor": "~0.56.0",
     "ngx-bootstrap": "20.0.2",
     "rxjs": "7.8.2",
     "tslib": "^2.3.0",
