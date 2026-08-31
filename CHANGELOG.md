@@ -1,3 +1,10 @@
+# [2.13.0](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.12.1...v2.13.0) (2026-08-31)
+
+
+### Features
+
+* bump angular and Web SDK version ([#272](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/issues/272)) ([893d93e](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/commit/893d93e5b29fe863637f4c5fdd5943388948e8d5))
+
 ## [2.12.1](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.12.0...v2.12.1) (2026-03-19)
 
 # [2.12.0](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.11.2...v2.12.0) (2026-02-05)
