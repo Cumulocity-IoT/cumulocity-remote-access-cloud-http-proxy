@@ -29,7 +29,7 @@
     "@angular/core": "^20.3.25",
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
-    "@angular/router": "^20.3.0",
+    "@angular/router": "^20.3.32",
     "@c8y/bootstrap": "~1023.14.209",
     "@c8y/client": "~1023.14.209",
     "@c8y/ngx-components": "~1023.14.209",
