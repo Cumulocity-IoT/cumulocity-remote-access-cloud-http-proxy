@@ -35,6 +35,10 @@ It's functionality can be described in the following steps:
 3. The authentication information is used to create a new remote access connect session. The device ID and remote access connect configuration Id is also required to establish this connection.
 4. After the remote access connect Websocket connection was established successfully, it will send the HTTP request through the Websocket connection to the web server running on the device. The corresponding response is also forwarded.
 
+The local server of a session (tenant, user, device and configuration) is reused by following requests and closed once it has had no open connection for 10 seconds (environment variable `RCA_IDLE_TIMEOUT`, in seconds).
+
+For configurations using the `mux` option (see [Multiplexing](#multiplexing)), all connections of a session are carried over a single remote access websocket, which is closed once the session has had no open connection for 60 seconds (environment variable `RCA_MULTIPLEX_IDLE_TIMEOUT`, in seconds). Multiplexing can be disabled entirely with the environment variable `RCA_MULTIPLEX=false`.
+
 ## UI Plugin
 
 The UI plugin adds tabs on device level to the application it has been installed to.
@@ -50,6 +54,8 @@ The default UI of the remote access connect feature can be used for that.
 The name of the configuration should be prefixed with either `http:` or `https:` depending on the server you are trying to connect to. This is used by the UI Plugin to identify endpoints that are compatible with it.
 
 The protocol should be set to `PASSTHROUGH`. In case this is not available, please contact your platform administrator to make it available.
+
+Options can be added to the prefix with a `+`, e.g. `http+mux:` or `https+mux:` (see [Multiplexing](#multiplexing)).
 
 You can then just enter the host and port that you would like to connect to with this configuration.
 Below you can find a sample configuration for Node-RED.
@@ -71,6 +77,14 @@ In case you want to set some other header as well, you can do so by setting a te
   ```
   c8y tenantoptions update --category cloud-http-proxy --key credentials.rca-http-header-<headerKey>-<deviceId>-<connectionId> --value <headerValue>
   ```
+
+### Multiplexing
+
+By default, every connection the browser opens to the web server on the device (web pages typically load many resources in parallel) creates a new remote access websocket, and therefore a new remote access operation on the device. Each of them takes a while to establish, which makes pages with many resources slow to load.
+
+Devices supporting remote access multiplexing (thin-edge.io) can carry all connections of a session over a single remote access websocket instead. To use it, add the `mux` option to the configuration name, e.g. `http+mux:Node-RED` or `https+mux:Router`.
+
+If the device does not support multiplexing, the microservice falls back to one websocket per connection (and does not try multiplexing again for this device and configuration for 10 minutes).
 
 ## How to demo this
 
