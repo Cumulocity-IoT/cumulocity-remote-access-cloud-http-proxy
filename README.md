@@ -35,6 +35,8 @@ It's functionality can be described in the following steps:
 3. The authentication information is used to create a new remote access connect session. The device ID and remote access connect configuration Id is also required to establish this connection.
 4. After the remote access connect Websocket connection was established successfully, it will send the HTTP request through the Websocket connection to the web server running on the device. The corresponding response is also forwarded.
 
+The local server of a session (tenant, user, device and configuration) is reused by following requests and closed once it has had no open connection for 10 seconds (environment variable `RCA_IDLE_TIMEOUT`, in seconds).
+
 ## UI Plugin
 
 The UI plugin adds tabs on device level to the application it has been installed to.

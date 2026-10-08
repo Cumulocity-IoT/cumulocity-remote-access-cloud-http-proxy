@@ -46,6 +46,8 @@ export class ConnectionHandler {
 
   private closed() {
     this.removeListeners();
+    // otherwise the proxied request hangs if the remote access websocket fails
+    this.socket.destroy();
   }
 
   private removeListeners() {
