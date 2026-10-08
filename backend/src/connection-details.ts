@@ -202,6 +202,12 @@ export class ConnectionDetails {
     });
   }
 
+  /** the remote access configuration of the connection (fetched once) */
+  async loadRCAConfig() {
+    this.rcaConfig ??= await this.getRCAConfig();
+    return this.rcaConfig;
+  }
+
   private async getRCAConfig() {
     let response: IFetchResponse;
     try {

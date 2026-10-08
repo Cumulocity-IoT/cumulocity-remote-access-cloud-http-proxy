@@ -4,7 +4,10 @@ import { RCAConnectionServer } from "./rca-connection-server";
 
 export class RCAServerStore {
   private store = new Map<string, RCAConnectionServer>();
-  /** servers being created, so concurrent requests of a session share one server */
+  /**
+   * servers being created, so concurrent requests of a session share one server. Websocket upgrades
+   * share it as well, so they can be carried by the session's multiplexed tunnel.
+   */
   private pending = new Map<string, Promise<RCAConnectionServer>>();
 
   constructor(private logger: winston.Logger) {}
@@ -17,12 +20,6 @@ export class RCAServerStore {
       logger.debug("Using existing server");
       fromStore.refreshCredentials(details);
       return fromStore;
-    }
-
-    if (details.isWebsocket) {
-      // websocket upgrades get a server of their own
-      logger.debug("Creating new server.");
-      return RCAServerStore.newConnectionServer(this.logger, details, () => {});
     }
 
     const pending = this.pending.get(id);
@@ -63,6 +60,6 @@ export class RCAServerStore {
   }
 
   private getId(details: ConnectionDetails) {
-    return `${details.tenant}/${details.user}/${details.cloudProxyDeviceId}/${details.cloudProxyConfigId}/${details.isWebsocket}`;
+    return `${details.tenant}/${details.user}/${details.cloudProxyDeviceId}/${details.cloudProxyConfigId}`;
   }
 }

@@ -2,7 +2,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
-    "target": "es5",
+    "target": "es2020",
     "lib": ["esnext"],
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,

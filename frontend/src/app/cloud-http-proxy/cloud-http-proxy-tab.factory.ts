@@ -15,13 +15,12 @@ import {
   CloudHTTPProxyPathConfigs,
   RemoteAccessService,
 } from './cloud-http-proxy-path/remote-access.service';
+import { parseConnectionName } from './connection-name';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CloudHttpProxyTabFactory implements ExtensionFactory<Tab> {
-  static remoteAccessConnectPrefix = 'http:';
-  static secureRemoteAccessConnectPrefix = 'https:';
   private canActivate$: Observable<boolean>;
 
   constructor(
@@ -56,55 +55,28 @@ export class CloudHttpProxyTabFactory implements ExtensionFactory<Tab> {
       return [];
     }
 
-    const httpPrefixedPassthroughConfigs = configs.filter(
-      (config) =>
-        config.protocol === 'PASSTHROUGH' &&
-        (config?.name?.startsWith(
-          CloudHttpProxyTabFactory.remoteAccessConnectPrefix
-        ) ||
-          config?.name?.startsWith(
-            CloudHttpProxyTabFactory.secureRemoteAccessConnectPrefix
-          ))
-    );
+    // configurations named `http:<label>` / `https:<label>`, optionally with options (`http+mux:<label>`)
+    const httpPassthroughConfigs = configs
+      .filter((config) => config.protocol === 'PASSTHROUGH')
+      .map((config) => ({ config, name: parseConnectionName(config?.name) }))
+      .filter(({ name }) => !!name)
+      // http tabs first, then https tabs
+      .sort((a, b) => Number(a.name.secure) - Number(b.name.secure));
 
     return this.canActivate$.pipe(
       filter((canActive) => !!canActive),
-      map(() => [
-        ...this.createTabsForConfigs(
-          httpPrefixedPassthroughConfigs,
-          device,
-          CloudHttpProxyTabFactory.remoteAccessConnectPrefix
-        ),
-        ...this.createTabsForConfigs(
-          httpPrefixedPassthroughConfigs,
-          device,
-          CloudHttpProxyTabFactory.secureRemoteAccessConnectPrefix,
-          true
-        ),
-      ])
+      map(() =>
+        httpPassthroughConfigs
+          .map(({ config, name }) => {
+            const tabs = this.getCustomPathTabs(config.id, device, name.secure);
+            if (tabs.length) {
+              return tabs;
+            }
+            return [this.getDefaultTab(name.label, device, name.secure, config.id)];
+          })
+          .flat()
+      )
     );
-  }
-
-  createTabsForConfigs(
-    httpPrefixedPassthroughConfigs: Array<{
-      protocol: string;
-      id: string;
-      name: string;
-    }>,
-    device: IManagedObject,
-    prefix: string,
-    secure?: boolean
-  ) {
-    return httpPrefixedPassthroughConfigs
-      .filter((tmp) => tmp.name.startsWith(prefix))
-      .map(({ id, name }) => {
-        const tabs = this.getCustomPathTabs(id, device, secure);
-        if (tabs.length) {
-          return tabs;
-        }
-        return [this.getDefaultTab(name, prefix, device, secure, id)];
-      })
-      .flat();
   }
 
   private getCustomPathTabs(
@@ -129,18 +101,16 @@ export class CloudHttpProxyTabFactory implements ExtensionFactory<Tab> {
   }
 
   private getDefaultTab(
-    name: string,
-    prefix: string,
+    label: string,
     device: IManagedObject,
     secure: boolean | undefined,
     id: string
   ) {
-    const newName = name.replace(prefix, '');
     const tab: Tab = {
       path: `/device/${device.id}/${
         secure ? 'secure-' : ''
       }cloud-http-proxy/${id}`,
-      label: `${newName}`,
+      label,
       icon: `window-restore`,
     };
     return tab;
