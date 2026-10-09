@@ -8,6 +8,7 @@
     "build": "tsc",
     "build:release": "docker build -t cloud-http-proxy -f ./Dockerfile .. && docker save cloud-http-proxy -o image.tar && zip ../cloud-http-proxy cumulocity.json image.tar",
     "dev": "tsx watch src/index.ts",
+    "test": "rm -rf test-dist && tsc -p tsconfig.test.json && node --test test-dist/test/*.test.js",
     "start": "ts-node src/index.ts",
     "start:docker": "docker run -it -p 3000:3000 --name http-proxy --env-file .env cloud-http-proxy",
     "docker:clean": "docker kill http-proxy || docker rm http-proxy"

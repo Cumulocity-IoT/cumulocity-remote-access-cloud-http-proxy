@@ -131,3 +131,5 @@ dist
 
 *.zip
 *.tar
+# compiled backend tests
+backend/test-dist
