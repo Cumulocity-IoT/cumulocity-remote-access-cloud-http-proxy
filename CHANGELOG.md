@@ -1,3 +1,10 @@
+## [2.13.1](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.13.0...v2.13.1) (2026-10-09)
+
+
+### Bug Fixes
+
+* keep connection servers open while in use ([#282](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/issues/282)) ([83cd6ec](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/commit/83cd6ecb630501048ed70cc634b369742dbd0a05)), closes [net.Server#connections](https://github.com/net.Server/issues/connections)
+
 # [2.13.0](https://github.com/Cumulocity-IoT/cumulocity-remote-access-cloud-http-proxy/compare/v2.12.1...v2.13.0) (2026-08-31)
 
 
