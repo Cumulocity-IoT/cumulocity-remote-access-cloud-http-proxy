@@ -33,7 +33,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
+          cache: "yarn"
 
       - name: Set C8Y_VERSION env variable
         run: echo "C8Y_VERSION=$(node -p -e "require('./frontend/package.json').dependencies['@c8y/ngx-components']")" >> $GITHUB_ENV
@@ -44,8 +44,7 @@ jobs:
 
       - name: 🚧  Build Frontend
         run: |
-          cd frontend
-          npm run build
+          yarn workspace remote-access-cloud-http-proxy-ui build
 
       - name: Upload Frontend Artifact
         uses: actions/upload-artifact@v4
@@ -55,10 +54,13 @@ jobs:
           retention-days: 5
           path: frontend/dist/cloud-http-proxy-ui/
 
+      - name: 🚀  Test Backend
+        run: |
+          yarn workspace cloud-http-proxy test
+
       - name: 🚧  Build Backend
         run: |
-          cd backend
-          npm run build:release
+          yarn workspace cloud-http-proxy build:release
 
       - name: Upload Backend Artifact
         uses: actions/upload-artifact@v4
