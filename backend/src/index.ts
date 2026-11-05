@@ -50,7 +50,7 @@ async function disableXSRFTokenValidation() {
         user: process.env.C8Y_BOOTSTRAP_USER,
         password: process.env.C8Y_BOOTSTRAP_PASSWORD,
       },
-      process.env.C8Y_BASEURL
+      process.env.C8Y_BASEURL,
     );
   } catch (e) {
     logger.error("Failed to get subscriptions", { e });
@@ -62,7 +62,7 @@ async function disableXSRFTokenValidation() {
     try {
       if (tenantIdsWhereXSRFTokenValidationHasBeenDisabled.includes(tenant)) {
         logger.debug(
-          `XSRF token validation already disabled for tenant ${tenant}`
+          `XSRF token validation already disabled for tenant ${tenant}`,
         );
         continue;
       }
@@ -70,27 +70,29 @@ async function disableXSRFTokenValidation() {
       logger.debug(`Disabling XSRF token validation for tenant ${tenant}`);
       const client = new Client(
         new BasicAuth(subscription),
-        process.env.C8Y_BASEURL
+        process.env.C8Y_BASEURL,
       );
       const category = "jwt";
       const key = "xsrf-validation.enabled";
 
       try {
         const {
-        data: { value },
+          data: { value },
         } = await client.options.tenant.detail({
           category,
           key,
         });
         if (value === "false" || <any>value === false) {
-          logger.info(`XSRF token validation already disabled for tenant ${tenant}`);
+          logger.info(
+            `XSRF token validation already disabled for tenant ${tenant}`,
+          );
           tenantIdsWhereXSRFTokenValidationHasBeenDisabled.push(tenant);
           continue;
         }
       } catch (e) {
         // assume that the option does not exist yet
       }
-      
+
       await client.options.tenant.update({
         category: "jwt",
         key: "xsrf-validation.enabled",
@@ -102,7 +104,7 @@ async function disableXSRFTokenValidation() {
     } catch (e) {
       logger.warn(
         `Failed to disable XSRF token validation for tenant ${tenant}`,
-        { e }
+        { e },
       );
     }
   }
@@ -145,7 +147,7 @@ async function getTarget(
     }
   >,
   requestLogger: Logger,
-  secure?: boolean
+  secure?: boolean,
 ) {
   let details: ConnectionDetails;
   try {
@@ -189,7 +191,7 @@ function hostRewrite(req: express.Request<any>, secure: boolean) {
 function getRewriteOptions(
   req: express.Request<any>,
   secure?: boolean,
-  hasCustomHost?: boolean
+  hasCustomHost?: boolean,
 ): Server.ServerOptions {
   const { "x-forwarded-host": forwardedHost } = req.headers;
   return {
@@ -210,14 +212,17 @@ function getRewriteOptions(
 function hasCustomHostHeader(
   req: express.Request,
   deviceId: string,
-  configId: string
+  configId: string,
 ) {
   const headerToLookoutFor = `rca-http-header-host-${deviceId}-${configId}`;
   return !!req.headers[headerToLookoutFor];
 }
 
 function prefixCookiesToBeSet(
-  proxy: Server<http.IncomingMessage, http.ServerResponse<http.IncomingMessage>>
+  proxy: Server<
+    http.IncomingMessage,
+    http.ServerResponse<http.IncomingMessage>
+  >,
 ) {
   proxy.on("proxyRes", (response) => {
     const cookiesToSet = response.headers["set-cookie"];
@@ -233,6 +238,22 @@ function prefixCookiesToBeSet(
   });
 }
 
+function removeUnwantedHeadersInResponse(
+  proxy: Server<
+    http.IncomingMessage,
+    http.ServerResponse<http.IncomingMessage>
+  >,
+) {
+  const unwantedHeaders = ["x-frame-options", "content-security-policy"];
+  proxy.on("proxyRes", (response) => {
+    for (const headerKey of Object.keys(response.headers)) {
+      if (unwantedHeaders.includes(headerKey.toLowerCase())) {
+        delete response.headers[headerKey];
+      }
+    }
+  });
+}
+
 app.use("/s/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
   const requestLogger = logger.child({
     method: req.method,
@@ -244,7 +265,7 @@ app.use("/s/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
     const hasCustomHost = hasCustomHostHeader(
       req,
       req.params.cloudProxyDeviceId,
-      req.params.cloudProxyConfigId
+      req.params.cloudProxyConfigId,
     );
     const target = await getTarget(req, requestLogger, true);
     const rewriteOptions = getRewriteOptions(req, true, hasCustomHost);
@@ -264,6 +285,7 @@ app.use("/s/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
     }
 
     prefixCookiesToBeSet(proxy);
+    removeUnwantedHeadersInResponse(proxy);
 
     proxy.web(
       req,
@@ -275,7 +297,7 @@ app.use("/s/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
       (e) => {
         requestLogger.error("Error while proxying", { error: e });
         res.sendStatus(500);
-      }
+      },
     );
   } catch (e) {
     requestLogger.error("catch block", { error: e });
@@ -295,7 +317,7 @@ app.use("/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
     const hasCustomHost = hasCustomHostHeader(
       req,
       req.params.cloudProxyDeviceId,
-      req.params.cloudProxyConfigId
+      req.params.cloudProxyConfigId,
     );
     const target = await getTarget(req, requestLogger);
     const rewriteOptions = getRewriteOptions(req, true, hasCustomHost);
@@ -314,6 +336,7 @@ app.use("/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
     }
 
     prefixCookiesToBeSet(proxy);
+    removeUnwantedHeadersInResponse(proxy);
 
     proxy.web(
       req,
@@ -325,7 +348,7 @@ app.use("/:cloudProxyDeviceId/:cloudProxyConfigId/", async (req, res) => {
       (e) => {
         requestLogger.error("Error while proxying", { error: e });
         res.sendStatus(500);
-      }
+      },
     );
   } catch (e) {
     requestLogger.error("catch block", { error: e });
